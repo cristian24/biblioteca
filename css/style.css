@@ -69,3 +69,7 @@ footer{
   display: none;
 }
 
+#resultados table, #result-mensaje{
+  display: none;
+}
+

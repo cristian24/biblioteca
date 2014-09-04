@@ -15,9 +15,8 @@
 					<h3>Usuarios</h3>
 					<div class="list-group">
 						<?php echo anchor('usuarios/create/true', 'Crear Usuario', array('class' => 'list-group-item '.$user_create_class)); ?>
-						<?php echo anchor('#', 'Modificar Usuario', array('class' => 'list-group-item '.$user_edit_class)); ?>
-						<?php echo anchor('#', 'Consultar Usuario', array('class' => 'list-group-item '.$user_query_class)); ?>
-						<?php echo anchor('#', 'Eliminar Usuario', array('class' => 'list-group-item '.$user_delete_class)); ?>
+						<?php echo anchor('usuarios/query/update', 'Modificar Usuario', array('class' => 'list-group-item '.$user_edit_class)); ?>						
+						<?php echo anchor('usuarios/query/delete', 'Eliminar Usuario', array('class' => 'list-group-item '.$user_delete_class)); ?>
 					</div>					
 				</div>
 				<div class="col-md-9">

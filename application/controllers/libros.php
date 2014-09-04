@@ -16,8 +16,21 @@ class Libros extends CI_Controller {
 		$data['usuario_class'] = '';
 		$data['section_actual'] = 'Libros';
 		$this->load->view('template/header', $data);
-		$this->load->view('libros', $data);
+		$this->load->view('libros/libros', $data);
 		$this->load->view('template/footer');		
+	}
+
+	public function create()
+	{
+		$data['title'] = 'Crear Libro';
+		$data['title_section'] = 'Crea un Libro';
+		$data['subtitle_section'] = 'Puedes crear un libro o documento';
+		$data['libros_class'] = 'active';
+		$data['usuario_class'] = '';
+		$data['section_actual'] = 'Crear Libro/Documento';
+		$this->load->view('template/header', $data);
+		$this->load->view('libros/create_libro', $data);
+		$this->load->view('template/footer');
 	}
 }
 

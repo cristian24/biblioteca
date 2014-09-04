@@ -58,8 +58,8 @@ class MY_Session extends CI_Session{
      * @param  String  $valor variable de session.
      * @return void        redirige al index
      */
-	public function is_logueado($valor){
-        if($this->userdata($valor) === TRUE)
+	public function is_logueado(){
+        if($this->userdata('is_logued_in') === TRUE)
         {            
             redirect('');
         }

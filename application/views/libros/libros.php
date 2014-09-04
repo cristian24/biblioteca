@@ -5,13 +5,24 @@
 			 	<!-- <li><a href="#">Library</a></li> -->
 			</ul>		
 			<div class="row">
-				<div class="col-sm-3">	
-					<h3>Usuarios</h3>
+				<div class="col-sm-3">
+					<h3>Libros</h3>
 					<div class="list-group">
-						<?php echo anchor('usuarios/create/true', 'Crear Usuario', array('class' => 'list-group-item')); ?>
-						<?php echo anchor('#', 'Modificar Usuario', array('class' => 'list-group-item')); ?>
-						<?php echo anchor('#', 'Consultar Usuario', array('class' => 'list-group-item')); ?>
-						<?php echo anchor('#', 'Eliminar Usuario', array('class' => 'list-group-item')); ?>
+						<?php echo anchor('libros/create', 'Crear Libro', array('class' => 'list-group-item')); ?>
+						<?php echo anchor('libros/update', 'Modificar Libro', array('class' => 'list-group-item')); ?>
+						<?php echo anchor('libros/delete', 'Eliminar Libro', array('class' => 'list-group-item')); ?>					
+					</div>	
+					<h3>Autores</h3>
+					<div class="list-group">
+						<?php echo anchor('#', 'Crear Autor', array('class' => 'list-group-item')); ?>
+						<?php echo anchor('#', 'Modificar Autor', array('class' => 'list-group-item')); ?>
+						<?php echo anchor('#', 'Eliminar Autor', array('class' => 'list-group-item')); ?>
+					</div>
+					<h3>Editoriales</h3>		
+					<div class="lis-group">
+						<?php echo anchor('#', 'Crear Editorial', array('class' => 'list-group-item')); ?>
+						<?php echo anchor('#', 'Modificar Editorial', array('class' => 'list-group-item')); ?>
+						<?php echo anchor('#', 'Eliminar Editorial', array('class' => 'list-group-item')); ?>						
 					</div>		
 				</div>
 				<div class="col-md-9">

@@ -63,7 +63,9 @@
 								<li><a href="#">Modificar Contraseña</a></li>
 								<li><a href="#">Modificar Info</a></li>
 								<li class="divider"></li>
-								<li><?php echo anchor('usuarios/salir', 'Salir');?></li>
+								<li><?php echo anchor('usuarios/salir', 'Salir', 
+									array('data-toggle' => 'modal', 
+										  'data-target' => '#modal_salir'));?></li>
 							</ul>
 							
 						</li>
@@ -82,3 +84,11 @@
 		</nav>
 
 		<div id="contenido">
+
+			<div class="modal fade" id="modal_salir" tabindex="-1" role="dialog" aria-labelledby="modal_salirLabel" aria-hidden="true">
+				<div class="modal-dialog">
+			    	<div class="modal-content">
+				      	
+			    	</div>
+			  	</div>
+			</div>
