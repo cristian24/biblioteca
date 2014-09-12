@@ -32,7 +32,7 @@
 							</div>
 						<?php endif; ?>
 
-						<?php echo form_open('usuarios/update/1', array('class' => 'form-signin')); ?>					
+						<?php echo form_open('usuarios/update/'.$section_actual, array('class' => 'form-signin')); ?>					
 
 							<div class="form-group">
 								<input class="form-control" type="text" name="nombre" value="<?php echo set_value('nombre', $usuario['nombre']);?>" placeholder="Nombre" autofocus>								

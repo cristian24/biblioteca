@@ -9,20 +9,18 @@
 					<h3>Libros</h3>
 					<div class="list-group">
 						<?php echo anchor('libros/create', 'Crear Libro', array('class' => 'list-group-item')); ?>
-						<?php echo anchor('libros/update', 'Modificar Libro', array('class' => 'list-group-item')); ?>
-						<?php echo anchor('libros/delete', 'Eliminar Libro', array('class' => 'list-group-item')); ?>					
+						<?php echo anchor('libros/query/update', 'Modificar Libro', array('class' => 'list-group-item')); ?>
+						<?php echo anchor('libros/query/delete', 'Eliminar Libro', array('class' => 'list-group-item')); ?>					
 					</div>	
 					<h3>Autores</h3>
 					<div class="list-group">
-						<?php echo anchor('#', 'Crear Autor', array('class' => 'list-group-item')); ?>
+						<?php echo anchor('autores/create', 'Crear Autor', array('class' => 'list-group-item', 'data-toggle' => 'modal', 'data-target'=> '#create_autor_modal')); ?>
 						<?php echo anchor('#', 'Modificar Autor', array('class' => 'list-group-item')); ?>
-						<?php echo anchor('#', 'Eliminar Autor', array('class' => 'list-group-item')); ?>
 					</div>
 					<h3>Editoriales</h3>		
 					<div class="lis-group">
-						<?php echo anchor('#', 'Crear Editorial', array('class' => 'list-group-item')); ?>
-						<?php echo anchor('#', 'Modificar Editorial', array('class' => 'list-group-item')); ?>
-						<?php echo anchor('#', 'Eliminar Editorial', array('class' => 'list-group-item')); ?>						
+						<?php echo anchor('editoriales/create', 'Crear Editorial', array('class' => 'list-group-item', 'data-toggle' => 'modal', 'data-target'=> '#create_editorial_modal')); ?>
+						<?php echo anchor('#', 'Modificar Editorial', array('class' => 'list-group-item')); ?>						
 					</div>		
 				</div>
 				<div class="col-md-9">
@@ -31,6 +29,9 @@
 							<?php echo $title_section; ?><br>
 							<small><?php echo $subtitle_section; ?></small>
 						</h1>
+
+						<?php echo $mensaje_ok; ?>
+						<?php echo $mensaje_err; ?>
 						<p>
 							Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
@@ -51,3 +52,17 @@
 				</div>
 			</div>
 		</section>
+
+		<div class="modal fade" id="create_autor_modal" tabindex="-1" role="dialog" aria-labelledby="create_autor_modalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+		    	<div class="modal-content">			      	
+		    	</div>
+		  	</div>
+		</div>
+
+		<div class="modal fade" id="create_editorial_modal" tabindex="-1" role="dialog" aria-labelledby="create_editorial_modalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+		    	<div class="modal-content">			      	
+		    	</div>
+		  	</div>
+		</div>

@@ -19,6 +19,8 @@
 							<?php echo $title_section; ?><br>
 							<small><?php echo $subtitle_section; ?></small>
 						</h1>
+						<?php echo $mensaje_ok; ?>
+						<?php echo $mensaje_err; ?>
 						<p>
 							Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,

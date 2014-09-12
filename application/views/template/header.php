@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 	<head>
 		<title><?php echo $title; ?></title>
 		<meta charset="UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
     	<meta name="viewport" content="width=device-width, initial-scale=1">		
-		<link rel="stylesheet" type="text/css" href="<?php echo base_url('css/bootstrap.css');?>">
-		<!-- <link rel="stylesheet" type="text/css" href="<?php echo base_url('css/bootstrap-responsive.css');?>"> -->
+		<link rel="stylesheet" type="text/css" href="<?php echo base_url('css/bootstrap4.css');?>">
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url('css/style.css');?>">
 	</head>
 
@@ -87,8 +86,24 @@
 
 			<div class="modal fade" id="modal_salir" tabindex="-1" role="dialog" aria-labelledby="modal_salirLabel" aria-hidden="true">
 				<div class="modal-dialog">
+			    	<div class="modal-content">				      	
+			    	</div>
+			  	</div>
+			</div>
+
+			<div class="modal fade" id="modal_mensajes" tabindex="-1" role="dialog" aria-labelledby="modal_mensajesLabel" aria-hidden="true">
+				<div class="modal-dialog">
 			    	<div class="modal-content">
-				      	
+			    		<div class="modal-header">
+				        	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				        	<h4 class="modal-title" id="modal_mensajesLabel">titulo</h4>
+				      	</div>
+				      	<div class="modal-body">
+				        	body        	
+				      	</div>
+				      	<div class="modal-footer">
+				        	<button type="button" class="btn btn-default" data-dismiss="modal">Aceptar</button>
+				      	</div>				      	
 			    	</div>
 			  	</div>
 			</div>

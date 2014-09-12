@@ -2,6 +2,9 @@
 
 class Usuarios extends CI_Controller {
 
+    /**
+     * Constructor
+     */
 	public function __construct()
     {
 		parent::__construct();
@@ -9,9 +12,47 @@ class Usuarios extends CI_Controller {
         $this->load->helper('security');		
 	}
 
-	public function index()
+    /**
+     * Carga la vista principal
+     * @param  boolean $mensaje recibe un mensaje de exito o de fracaso, por defecto tiene
+     *                          tiene un valor de false, por tanto no se envia ningun mensaje
+     * @return void           Vista principal del modulo usuarios
+     */
+	public function index($mensaje=FALSE)
 	{
 		$this->session->acceso('Administrador');
+
+        if($mensaje)
+        {
+            if($mensaje === 'ok')
+            {
+                $data['mensaje_ok'] = "<div class='alert alert-success alert-dismissible' role='alert'>
+                                            <button type='button' class='close' data-dismiss='alert'>
+                                                <span aria-hidden='true'>&times;</span>
+                                                <span class='sr-only'>Close</span>
+                                            </button>
+                                            Usuario creado con exito!
+                                        </div>";
+                $data['mensaje_err'] = "";
+            }               
+            else
+            {
+                $data['mensaje_err'] = "<div class='alert alert-danger alert-dismissible' role='alert'>
+                                            <button type='button' class='close' data-dismiss='alert'>
+                                                <span aria-hidden='true'>&times;</span>
+                                                <span class='sr-only'>Close</span>
+                                            </button>
+                                            Error! al crear usuario vuelve a 
+                                            <a class='alert-link' href='../create/true'>intentarlo</a>.
+                                        </div>";
+                $data['mensaje_ok'] = "";
+            }               
+        }else
+        {
+            $data['mensaje_ok'] = "";
+            $data['mensaje_err'] = "";
+        }
+
 		$data['title'] = 'Gesti&oacute;n Usuarios';
 		$data['title_section'] = 'Gesti&oacute;n de Usuario';
 		$data['subtitle_section'] = 'Gestiona usuarios y asigna perfiles';
@@ -23,6 +64,12 @@ class Usuarios extends CI_Controller {
 		$this->load->view('template/footer');	
 	}
 
+    /**
+     * Retorna los datos del usuario consultado, se responde un json el cual es solicitado por un 
+     * llamdo ajax.
+     * @param  boolean $query recibe el/los parametros de busqueda, por defecto no se envia nada.
+     * @return json         datos en formata json
+     */
     public function query_rqst($query=FALSE)
     {
         if($this->input->is_ajax_request())
@@ -56,10 +103,47 @@ class Usuarios extends CI_Controller {
         }
     }
 
-    public function query($accion)
+    /**
+     * Carga la vista de busqueda de usuario
+     * @param  String  $accion  Hace referencia a si la busqueda es para una actualización o una 
+     *                          eliminación.
+     * @param  boolean $mensaje mensaje de exito o de error, por defecto no se envia ningun mensaje.
+     * @return void           se imprime la vista de busquda de usuarios.
+     */
+    public function query($accion, $mensaje=FALSE)
     {
         if($accion === 'update' || $accion === 'delete')
         {
+            if($mensaje)
+            {
+                if($mensaje === 'ok')
+                {
+                    $data['mensaje_ok'] = "<div class='alert alert-success alert-dismissible' role='alert'>
+                                                <button type='button' class='close' data-dismiss='alert'>
+                                                    <span aria-hidden='true'>&times;</span>
+                                                    <span class='sr-only'>Close</span>
+                                                </button>
+                                                Usuario Eliminado con exito!
+                                            </div>";
+                    $data['mensaje_err'] = "";
+                }               
+                else
+                {
+                    $data['mensaje_err'] = "<div class='alert alert-danger alert-dismissible' role='alert'>
+                                                <button type='button' class='close' data-dismiss='alert'>
+                                                    <span aria-hidden='true'>&times;</span>
+                                                    <span class='sr-only'>Close</span>
+                                                </button>
+                                                Error! al crear usuario vuelve a 
+                                                <a class='alert-link' href='../create/true'>intentarlo</a>.
+                                            </div>";
+                    $data['mensaje_ok'] = "";
+                }               
+            }else
+            {
+                $data['mensaje_ok'] = "";
+                $data['mensaje_err'] = "";
+            }
             if($accion === 'update')
             {
                 $data['title'] = 'Modificar Usuario';
@@ -94,17 +178,17 @@ class Usuarios extends CI_Controller {
          
     }
 
+    /**
+     * Retorna datos en formato json, a un peticion ajax
+     * @return json datos en format json
+     */
 	public function login_rqst()
     {
 		if($this->input->is_ajax_request())
         {            
             $this->form_validation->set_rules('login', 'Login', 'trim|required|min_length[3]|max_length[50]|xss_clean');
         	$this->form_validation->set_rules('pass', 'Pass', 'trim|required|min_length[3]|max_length[30]|xss_clean');
-            //personalizar mensajes.
-            $this->form_validation->set_message('required', 'El campo %s es Requerido');
-            $this->form_validation->set_message('min_length', 'El campo %s debe ser mayor de %s caracteres');  
-            $this->form_validation->set_message('max_length', 'El campo %s debe ser menor de %s caracteres');      
-        
+                   
         	if($this->form_validation->run() === FALSE)
         	{
         	   $data = array(
@@ -130,8 +214,44 @@ class Usuarios extends CI_Controller {
         }
 	}
 
-	public function login(){
+    /**
+     * Carga la vista de logeo
+     * @param  boolean $mensaje Mensaje de exito o de fracaso, por defecto no se envia ningun mensaje.
+     * @return void           se imprime la vista de logeo.
+     */
+	public function login($mensaje=FALSE){
 		$this->session->is_logueado();
+
+        if($mensaje)
+        {
+            if($mensaje === 'ok')
+            {
+                $data['mensaje_ok'] = "<div class='alert alert-success alert-dismissible' role='alert'>
+                                            <button type='button' class='close' data-dismiss='alert'>
+                                                <span aria-hidden='true'>&times;</span>
+                                                <span class='sr-only'>Close</span>
+                                            </button>
+                                            Se registro con exito! porfavor inicia sesion
+                                        </div>";
+                $data['mensaje_err'] = "";
+            }               
+            else
+            {
+                $data['mensaje_err'] = "<div class='alert alert-danger alert-dismissible' role='alert'>
+                                            <button type='button' class='close' data-dismiss='alert'>
+                                                <span aria-hidden='true'>&times;</span>
+                                                <span class='sr-only'>Close</span>
+                                            </button>
+                                            Error! al registrarse vuelve a
+                                            <a class='alert-link' href='../create'>intentarlo</a>.
+                                        </div>";
+                $data['mensaje_ok'] = "";
+            }               
+        }else
+        {
+            $data['mensaje_ok'] = "";
+            $data['mensaje_err'] = "";
+        }
 
     	$data['title'] = 'Inicio Sesion';
 		$data['title_section'] = 'Inicia Sesion';
@@ -145,6 +265,12 @@ class Usuarios extends CI_Controller {
 		$this->load->view('template/footer');	
 	}
 
+    /**
+     * Despliega un mensaje de confirmacion, si se responde con confirmar = true, se elimina la sesion
+     * actual.
+     * @param  boolean $confirmar valor de confirmacion true/false.
+     * @return void             imprime mensaje de confirmación.
+     */
     public function salir($confirmar=FALSE)
     {
         if($confirmar)
@@ -159,6 +285,11 @@ class Usuarios extends CI_Controller {
         
     }
 
+    /**
+     * funcion auxiliar que crea las variables de sesion dependiendo de si $valor != invalid
+     * @param  String $valor valid/invalid
+     * @return void        se crean las variables de sesiones
+     */
 	public function user_valid($valor)
     {        
         if($valor !== 'invalid')
@@ -173,9 +304,15 @@ class Usuarios extends CI_Controller {
         }
     }   
 
+    /**
+     * Carga la vista de creacion de usuario o registro dependiendo de si $is_admin = true/false
+     * si $is_admin es true es una creacion de usuario, si es false se asume como registro.
+     * @param  boolean $is_admin true/false sirve como bandera para saber si sera un registro o una
+     *                           creacion de usuario.
+     * @return void            vista de creacion de usuarios o registro de usaurios
+     */
     public function create($is_admin = FALSE)
-    {
-        $this->session->acceso('Administrador');
+    {        
         $this->form_validation->set_rules('nombre', 'Nombre', 'trim|required|min_length[3]|max_length[50]|xss_clean');
         $this->form_validation->set_rules('login', 'Login', 'trim|required|min_length[3]|max_length[50]|is_unique[usuarios.login]');
         $this->form_validation->set_rules('pass', 'Contraseña', 'trim|required|min_length[3]|max_length[50]');
@@ -184,16 +321,9 @@ class Usuarios extends CI_Controller {
         $this->form_validation->set_rules('telefono', 'Telefono', 'trim|required|numeric|min_length[6]|max_length[10]');
         if($is_admin)
         {
+            $this->session->acceso('Administrador');
             $this->form_validation->set_rules('perfil', 'Perfil', 'trim|required');
         }
-        //personalizar mensajes.
-        $this->form_validation->set_message('required', 'El campo %s es Requerido');
-        $this->form_validation->set_message('min_length', 'El campo %s debe ser mayor de %s caracteres');  
-        $this->form_validation->set_message('max_length', 'El campo %s debe ser menor de %s caracteres');
-        $this->form_validation->set_message('is_unique', 'Lo digitado en el campo %s ya existe');
-        $this->form_validation->set_message('valid_email', 'No es un correo valido');
-        $this->form_validation->set_message('numeric', 'El campo %s debe ser numerico 0..9');
-        $this->form_validation->set_message('matches', 'El campo %s no coincide con el campo %s');
 
         if($this->form_validation->run() === FALSE)
         {
@@ -236,16 +366,34 @@ class Usuarios extends CI_Controller {
             $perfil = $this->input->post('perfil');
             if($is_admin)
             {                
-                $this->usuario_model->set_user($nombre, $telefono, $correo, $login, $pass, $perfil);
-                redirect('usuarios');
+                $response = $this->usuario_model->set_user($nombre, $telefono, $correo, $login, $pass, $perfil);
+                if($response)
+                {
+                    redirect('usuarios/index/ok');
+                }else
+                {
+                    redirect('usuarios/index/err');
+                }                    
             }else
             {
-                $this->usuario_model->set_user($nombre, $telefono, $correo, $login, $pass, FALSE);
-                redirect('usuarios/login');
+                $response = $this->usuario_model->set_user($nombre, $telefono, $correo, $login, $pass, FALSE);
+                if($response)
+                {
+                    redirect('usuarios/login/ok');
+                }else
+                {
+                    redirect('usuarios/login/err');
+                }                
             }
         }       
     }
 
+    /**
+     * Carga la vista de actualización de usuarios
+     * @param  integer  $id    Representa el id del usuario a actualizar
+     * @param  boolean $is_ok bandera que se utiliza para saber si la actualizacion tuvo éxito
+     * @return void        se imprime la vista de actualización de usuario.
+     */
     public function update($id, $is_ok=FALSE)
     {
         $this->session->acceso('Administrador');
@@ -255,12 +403,6 @@ class Usuarios extends CI_Controller {
         $this->form_validation->set_rules('correo', 'Correo', 'trim|required|max_length[100]|valid_email');
         $this->form_validation->set_rules('telefono', 'Telefono', 'trim|required|numeric|min_length[6]|max_length[10]');
         $this->form_validation->set_rules('perfil', 'Perfil', 'trim|required');
-        $this->form_validation->set_message('required', 'El campo %s es Requerido');
-        $this->form_validation->set_message('min_length', 'El campo %s debe ser mayor de %s caracteres');  
-        $this->form_validation->set_message('max_length', 'El campo %s debe ser menor de %s caracteres');
-        $this->form_validation->set_message('valid_email', 'No es un correo valido');
-        $this->form_validation->set_message('numeric', 'El campo %s debe ser numerico 0..9');
-        $this->form_validation->set_message('matches', 'El campo %s no coincide con el campo %s');
 
         $this->form_validation->set_value('nombre', $usuario['nombre']);
         $this->form_validation->set_value('login', $usuario['login']);
@@ -304,18 +446,27 @@ class Usuarios extends CI_Controller {
             $correo = $this->input->post('correo');
             $telefono = $this->input->post('telefono');
             $perfil = $this->input->post('perfil');            
-            $this->usuario_model->update_user($id, $nombre, $correo, $login, $telefono, $perfil); 
+            $response = $this->usuario_model->update_user($id, $nombre, $correo, $login, $telefono, $perfil); 
             redirect('usuarios/update/'.$id.'/true');           
         }
     }
 
+    /**
+     * Carga mensaje de confirmación para eliminar o no un usuario específico.
+     * @param  integer  $id        usuario a eliminar
+     * @param  boolean $confirmar true se elimina el usuario, false no se hace nada
+     * @return void             despliegue de mensaje.
+     */
     public function delete($id, $confirmar=FALSE)
     {
         $this->session->acceso('Administrador');
         if($confirmar)
         {
-            $this->usuario_model->delete_user($id);
-            redirect('usuarios/query/delete');
+            $response = $this->usuario_model->delete_user($id);
+            if($response)
+                redirect('usuarios/query/delete/ok');
+            else
+                redirect('usuarios/query/delete/err');
         }        
         $data['link'] = base_url().'index.php/usuarios/delete/'.$id.'/true';
         $this->load->view('usuarios/delete_user', $data);

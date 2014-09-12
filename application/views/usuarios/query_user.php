@@ -20,6 +20,9 @@
 							<?php echo $title_section; ?><br>
 							<small><?php echo $subtitle_section; ?></small>
 						</h1>
+
+						<?php echo $mensaje_ok; ?>
+						<?php echo $mensaje_err; ?>
 						
 				    	<div class="input-group">
 				    		<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>

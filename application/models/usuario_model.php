@@ -165,7 +165,7 @@ class Usuario_model extends CI_Model {
         if($query)
         {
             $this->db->where('id', $id);
-            $this->db->delete('usuarios');
+            return $this->db->delete('usuarios');
         }       
     }
 }

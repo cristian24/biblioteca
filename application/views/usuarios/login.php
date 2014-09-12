@@ -6,6 +6,9 @@
 
 			<div class="container">
 
+				<?php echo $mensaje_ok; ?>
+				<?php echo $mensaje_err; ?>
+
 				<div class="well">  				
 	  				<h4>Nota!</h4>
 	  				<p>Para poder descargar libros es necesario iniciar sesion, si no tienes una cuenta creala 
@@ -18,7 +21,7 @@
 				<?php echo form_open('usuarios/login_rqst', array('class' => 'form-signin', 'id' => 'form_login', 'role' => 'form')); ?>
 				    <h1 class="form-signin-heading">
 				    	<?php echo $title_section; ?>
-				    </h1>
+				    </h1>			    
 
 				    <div class="form-group">
 				    	<input class="form-control" id="inputLogin" value="<?php echo set_value('login'); ?>" placeholder="Login" name="login" type="text" autofocus>
