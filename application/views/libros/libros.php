@@ -9,18 +9,17 @@
 					<h3>Libros</h3>
 					<div class="list-group">
 						<?php echo anchor('libros/create', 'Crear Libro', array('class' => 'list-group-item')); ?>
-						<?php echo anchor('libros/query/update', 'Modificar Libro', array('class' => 'list-group-item')); ?>
-						<?php echo anchor('libros/query/delete', 'Eliminar Libro', array('class' => 'list-group-item')); ?>					
+						<?php echo anchor('libros/query', 'Consultar Libro', array('class' => 'list-group-item')); ?>						
 					</div>	
 					<h3>Autores</h3>
 					<div class="list-group">
 						<?php echo anchor('autores/create', 'Crear Autor', array('class' => 'list-group-item', 'data-toggle' => 'modal', 'data-target'=> '#create_autor_modal')); ?>
-						<?php echo anchor('#', 'Modificar Autor', array('class' => 'list-group-item')); ?>
+						<?php echo anchor('autores/query', 'Modificar Autor', array('class' => 'list-group-item')); ?>
 					</div>
-					<h3>Editoriales</h3>		
+					<h3>Editoriales</h3>
 					<div class="lis-group">
-						<?php echo anchor('editoriales/create', 'Crear Editorial', array('class' => 'list-group-item', 'data-toggle' => 'modal', 'data-target'=> '#create_editorial_modal')); ?>
-						<?php echo anchor('#', 'Modificar Editorial', array('class' => 'list-group-item')); ?>						
+						<?php echo anchor('editoriales/create', 'Crear Editorial', array('class' => 'list-group-item', 'data-toggle' => 'modal', 'data-target'=> '#create_editorial_modal')); ?>	
+						<?php echo anchor('editoriales/query', 'Modificar Editorial', array('class' => 'list-group-item')); ?>
 					</div>		
 				</div>
 				<div class="col-md-9">

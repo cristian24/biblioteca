@@ -26,7 +26,7 @@
 						
 				    	<div class="input-group">
 				    		<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
-				     		<input class="form-control col-lg-4" id="camp_query_user" placeholder="nombre/login usuario" type="text" for="<?php echo $for ?>" uri="<?php echo base_url().'index.php/'; ?>">
+				     		<input class="form-control col-lg-4" id="camp_query_user" placeholder="nombre/login usuario" type="text" for="<?php echo $for; ?>">
 				     	</div> 
 
 				     	<div id="resultados" class="table-responsive">

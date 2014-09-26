@@ -1,4 +1,23 @@
-@import url("//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700");
+/*@import url("//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700");*/
+
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lato Regular'), local('Lato-Regular'), url(../fonts/9k-RPmcnxYEPm8CNFsH2gg.woff) format('woff');
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Lato Bold'), local('Lato-Bold'), url(../fonts/wkfQbvfT_02e2IWO3yYueQ.woff) format('woff');
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Lato Italic'), local('Lato-Italic'), url(../fonts/oUan5VrEkpzIazlUe5ieaA.woff) format('woff');
+}
 /*!
  * bootswatch v3.2.0
  * Homepage: http://bootswatch.com

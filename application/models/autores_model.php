@@ -19,7 +19,7 @@ class Autores_model extends CI_Model {
 	 *                          si es false se consulta solo su nombre.
 	 * @return array           array de autores, si no hay resultados se retorna un array.
 	 */
-	public function get_autores_doc($id_doc, $with_id=FALSE)
+	/*public function get_autores_doc($id_doc, $with_id=FALSE)
 	{
 		if($with_id)
 		{
@@ -36,10 +36,10 @@ class Autores_model extends CI_Model {
 		$result = $this->db->get();
 		if($result->num_rows() > 0)
         {
-            return $result->result_array();
+           	return $result->result_array();
         }
         return array();
-	}
+	}*/
 
 	/**
 	 * Obtener todos los autores de la base de datos
@@ -47,14 +47,56 @@ class Autores_model extends CI_Model {
 	 */
 	public function get_autores()
 	{
+		$this->db->order_by("nombre", "asc");
 		$query = $this->db->get('autores');
-		$this->db->order_by("nombre", "asc"); 
+		// 
 		if($query->num_rows() > 0)
         {
             return $query->result_array();
         }
 	}
 
+	/**
+	 * Consulta los autores que cumplen con el valor que se envia como
+	 * parametro.
+	 * @param  String $query valor de busqueda puede ser un id o un nombre
+	 * @return array        retorna un array de autores que coinciden con
+	 *                      el valor de busqueda, en caso de fallo
+	 *                      retorna un array vacio.
+	 */
+	public function get_name_id($query)
+	{
+		$this->db->or_like('id', $query);
+		$this->db->or_like('nombre', $query);
+		$this->db->order_by('id', 'asc');
+		$consulta = $this->db->get('autores');
+		if($consulta->num_rows() > 0)
+        {
+            return $consulta->result_array();
+        }else
+        {
+        	return array();
+        }
+	}
+
+	/**
+	 * Actualizar un autor
+	 * @param  String $id     id del autor a actualizar.
+	 * @param  String $nombre nombre que tendra el autor
+	 * @return true/false     true si exito, false si falla
+	 */
+	public function update($id, $nombre)
+	{
+		$data = array('nombre' => $nombre);
+        $this->db->where('id', $id);
+        return $this->db->update('autores', $data);
+	}
+
+	/**
+	 * Crear un nuevo autor
+	 * @param  String $nombre Nombre del nuevo autor
+	 * @return true/false         true si la consulta tiene exito, false si falla
+	 */
 	public function create($nombre)
 	{
 		$data = array('nombre' => $nombre );		

@@ -1,7 +1,7 @@
 <section class="container-fluid paddin-topottom-lg">
 			<ul class="breadcrumb">
 				<li><?php echo anchor('', 'Inicio'); ?></li>
-				<li><?php echo anchor('libros', 'Libros'); ?></li>
+				<li><?php echo anchor('autores', 'Autores'); ?></li>
 				<li class="active"><?php echo $section_actual ?></li>
 			</ul>
 			
@@ -32,48 +32,26 @@
 
 						<div class="input-group">
 				    		<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
-				     		<input class="form-control col-lg-4" id="camp_query_doc" placeholder="Titulo/Autor/editorial" type="text">
+				     		<input class="form-control col-lg-4" id="camp_query_autor" placeholder="Nombre Autor" type="text">
 				     	</div> 
 
-				     	<div id="resultados_docs" class="table-responsive paddin-topottom-sm">
+				     	<div id="resultados_autors" class="table-responsive paddin-topottom-sm">
 				     		<h2 id="result-mensaje" class="text-center"></h2>
 				     		<table class='table table-hover table-striped'>
 	                           	<thead>
 	                                <tr>
 	                                    <th>Id</th>
-	                                    <th>Titulo P</th>
-	                                   	<th>Titulo S</th>
-	                                   	<th>Autor/es</th>
-	                                    <th>Idioma</th>
-	                                    <th>Descripción</th>
-	                                    <th>Editorial</th>
-	                                    <th>Accion</th>
-	                                    <th>Accion</th>
+	                                    <th>Nombre</th>
+	                                    <th>Acción</th>
 	                                </tr>
 	                            </thead>
 	                            <tbody>
-	                            	<?php foreach($libros as $key => $value): ?>
+	                            	<?php foreach($autores as $key => $value): ?>
 										<tr>
 											<td><?php echo $value['id']?></td>
-											<td><?php echo $value['titulo_p']?></td>
-											<td><?php echo $value['titulo_s']?></td>
-											<td>
-												<?php 
-													$nombres_autores = $value[0];
-													$list = "";
-													foreach($nombres_autores as $llave => $valor)
-													{
-														$list = $list." <span>-".$valor['nombre']."</span>";
-													}
-													echo $list;
-												?>
-											</td>
-											<td><?php echo $value['idioma']?></td>
-											<td><?php echo $value['descripcion']?></td>
-											<td><?php echo $value['nombre']?></td>
-											<td><?php echo anchor('libros/update/'.$value['id'], 'Modificar'); ?></td>
-											<td><?php echo anchor('#', 'Eliminar', array('id' => 'eliminar_documento', 'uri' => base_url().'index.php/libros/delete/'.$value['id'])); ?></td>
-										</tr>
+											<td><?php echo $value['nombre']?></td>										
+											<td><?php echo anchor('autores/update/'.$value['id'], 'Modificar', array('data-id' => $value['id'], 'data-name' => $value['nombre'])); ?></td>
+										</tr><!-- , array('data-toggle' => 'modal', 'data-target'=> '#edit_autor_modal') -->
 	                            	<?php endforeach; ?>
 	                            </tbody>
                         	</table>
@@ -94,5 +72,32 @@
 			<div class="modal-dialog">
 		    	<div class="modal-content">			      	
 		    	</div>
+		  	</div>
+		</div>
+
+		<div class="modal fade" id="edit_autor_modal" tabindex="-1" role="dialog" aria-labelledby="edit_autor_modalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+		    	<div class="modal-content">
+		    		<div class="modal-header">
+			        	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			        	<h4 class="modal-title" id="create_autor_modalLabel">Modificar Autor</h4>
+			      	</div>
+			      	<?php echo form_open('', array('id' => 'form_edit_autor', 'spellcheck' => 'true', 'uri_action' => base_url().'index.php/autores/update_rqst')); ?>
+				      	<div class="modal-body">	      		
+				      		<div class="form-group">
+				      			<label for="nombre">Nombre Autor</label>
+								<input class="form-control" type="text" id="input_nombre_autor" name="nombre" value="<?php echo set_value('nombre');?>" placeholder="Nombre del Autor">								
+							</div>
+							<div class="alert alert-danger error" id="err_name_autor">					
+								<?php echo validation_errors(); ?>
+							</div>
+							<div class="alert alert-success success" id="ok_name_autor"></div>
+						</div>
+				      	<div class="modal-footer">
+				        	<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+				        	<input type="submit" id="btn_edit_autor" class="btn btn-primary" role="button" value="Modificar">	        	
+				      	</div>
+			      	</form>			      	
+				</div>
 		  	</div>
 		</div>

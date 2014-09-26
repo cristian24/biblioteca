@@ -2,6 +2,7 @@
 			<ul class="breadcrumb">
 				<li><?php echo anchor('', 'Inicio'); ?></li>
 				<li><?php echo anchor('libros', 'Libros'); ?></li>
+				<li><?php echo anchor('libros/query', 'Consulta'); ?></li>
 				<li class="active"><?php echo $section_actual ?></li>
 			</ul>
 			
@@ -28,25 +29,50 @@
 						<h1 class="text-center">
 							<?php echo $title_section; ?><br>
 							<small><?php echo $subtitle_section; ?></small>
-						</h1>						
-						
-						<?php echo form_open_multipart('libros/create', array('class' => 'form-signin', 'spellcheck' => 'true')); ?>						
+						</h1>
 
-							<div class="form-group">								
-								<input class="form-control" type="text" name="titulo_p" value="<?php echo set_value('titulo_p');?>" placeholder="Título Principal" autofocus>								
+						<?php if( ! empty($mensaje_ok) && $mensaje_ok === 'OK'): ?>
+							<div class="alert alert-success alert-dismissable" role="alert">
+								<button type="button" class="close" data-dismiss="alert">
+									<span aria-hidden="true">&times;</span>
+									<span class="sr-only">Close</span>
+								</button>
+								<strong>Ok!! </strong>Documento modificado exitosamente
+							</div>
+						<?php elseif($mensaje_ok === 'ERROR'): ?>
+							<div class="alert alert-danger alert-dismissable" role="alert">
+								<button type="button" class="close" data-dismiss="alert">
+									<span aria-hidden="true">&times;</span>
+									<span class="sr-only">Close</span>
+								</button>
+								<strong>Error!! </strong>Intentelo de Nuevo
+							</div>
+						<?php endif; ?>
+						
+						<?php echo form_open_multipart('libros/update/'.$section_actual, array('class' => 'form-signin', 'spellcheck' => 'true')); ?>						
+
+							<div class="form-group">
+								<input class="form-control" type="text" name="titulo_p" value="<?php echo set_value('titulo_p', $documento['titulo_p']);?>" placeholder="Título Principal" autofocus>								
 							</div>
 							<?php echo form_error('titulo_p', '<div class="alert alert-danger">', '</div>'); ?> 
 
 							<div class="form-group">
-								<input class="form-control" type="text" name="titulo_s" value="<?php echo set_value('titulo_s');?>" placeholder="Título Secundario">								
+								<input class="form-control" type="text" name="titulo_s" value="<?php echo set_value('titulo_s', $documento['titulo_s']);?>" placeholder="Título Secundario">								
 							</div>
 							<?php echo form_error('titulo_s', '<div class="alert alert-danger">', '</div>'); ?>
 
 							<div class="form-group">
-								<select class="form-control" id="selct_autor" name="autor[]" multiple="">
-									<?php foreach ($autores as $value) : ?>
-										<option value="<?php echo $value['id'];?>" <?php echo set_select('autor[]', $value['id']);?> ><?php echo $value['nombre'];?></option>
-									<?php endforeach; ?>						          	
+								<select class="form-control" id="selct_autor" name="autor[]" multiple="">									
+									<?php foreach($autores as $value) : ?>
+										<?php 
+											$selected = FALSE;
+											if(in_array($value['nombre'], $autors_doc))
+											{
+												$selected = TRUE;
+											}
+										?>
+										<option value="<?php echo $value['id'];?>" <?php echo set_select('autor[]', $value['id'], $selected);?> ><?php echo $value['nombre'];?></option>									
+									<?php endforeach; ?>
 	        					</select>
 	        					<span class="help-block">
 	        						Elige el autor del documento, puedes elegir varios o seleccionar Anonimo, si no encuentras
@@ -55,27 +81,21 @@
 	        				</div>
 	        				<?php echo form_error('autor[]', '<div class="alert alert-danger">', '</div>'); ?>
 
-							<div class="form-group">
+							<div class="form-group">								
 								<select class="form-control" id="selct_editorial" name="editorial">								
 									<?php foreach ($editoriales as $value) : ?>
-										<option value="<?php echo $value['id'];?>" <?php echo set_select('editorial', $value['id']);?> ><?php echo $value['nombre'];?></option>
-									<?php endforeach; ?>					          	
+										<?php $selected = ($value['nombre'] === $documento['nombre']) ? TRUE : ''; ?>
+										<option value="<?php echo $value['id'];?>" <?php echo set_select('editorial', $value['id'], $selected);?> ><?php echo $value['nombre'];?></option>
+									<?php endforeach; ?>
 	        					</select>
 	        					<span class="help-block">
 	        						Elige el editorial del documento, si no tiene selecciona 'No Aplica', si no encuentras la
 	        						editorial buscada creala <?php echo anchor('editoriales/create', 'Aquí', array('data-toggle' => 'modal', 'data-target'=> '#create_editorial_modal')); ?>.
 	        					</span>
 	        				</div>
-
+								
 							<div class="form-group">
-								<select class="form-control" id="selct_idioma" name="idioma">
-									<option value="" <?php echo set_select('idioma', '');?> >--Elige--</option>
-									<option value="Inglés" <?php echo set_select('idioma', 'Inglés');?> >Inglés</option>
-						          	<option value="Español" <?php echo set_select('idioma', 'Español');?> >Español</option>
-						          	<option value="Francés" <?php echo set_select('idioma', 'Francés');?> >Francés</option>
-						          	<option value="Alemán" <?php echo set_select('idioma', 'Alemán');?> >Alemán</option>
-						          	<option value="Portugués" <?php echo set_select('idioma', 'Portugués');?> >Portugués</option>
-	        					</select>
+								<?php echo form_dropdown('idioma', $idiomas, $documento['idioma'], 'class="form-control" id="selct_idioma"'); ?>
 	        					<span class="help-block">
 	        						Elige el idioma principal del documento.
 	        					</span>
@@ -83,28 +103,20 @@
 	        				<?php echo form_error('idioma', '<div class="alert alert-danger">', '</div>'); ?>
 
 							<div class="form-group">
-								<textarea class="form-control" rows="5" id="descripcion" name="descripcion" placeholder="Breve descripción"><?php echo set_value('descripcion');?></textarea>								
+								<textarea class="form-control" rows="5" id="descripcion" name="descripcion" placeholder="Breve descripción"><?php echo set_value('descripcion', $documento['descripcion']);?></textarea>								
 							</div>
 							<?php echo form_error('descripcion', '<div class="alert alert-danger">', '</div>'); ?>
 
 							<div class="form-group">
-								<select class="form-control" id="selct_formato" name="tipo">
-									<option value="" <?php echo set_select('tipo', '');?> >--Elige--</option>
-									<option value="Revista" <?php echo set_select('tipo', 'Revista');?> >Revista</option>
-						          	<option value="Notas" <?php echo set_select('tipo', 'Notas');?> >Notas</option>
-						          	<option value="Libro" <?php echo set_select('tipo', 'Libro');?> >Libro</option>
-						          	<option value="Escrito/Resumen" <?php echo set_select('tipo', 'Escrito/Resumen');?> >Escrito/Resumen</option>
-						          	<option value="Diagrama" <?php echo set_select('tipo', 'Diagrama');?> >Diagrama</option>	
-						          	<option value="Otros" <?php echo set_select('tipo', 'Otros');?> >Otros</option>					          	
-	        					</select>
-	        					<span class="help-block">
+								<?php echo form_dropdown('tipo', $tipos, $documento['tipo'], 'class="form-control" id="selct_formato"'); ?>
+								<span class="help-block">
 	        						Elige el Tipo del documento.
 	        					</span>
 	        				</div>
 	        				<?php echo form_error('tipo', '<div class="alert alert-danger">', '</div>'); ?>
 
 	        				<div class="form-group">
-	        					<input type="text" name="wrap_keys" id="wrap_keys" placeholder="clave1, clave2, clave3" value="<?php echo set_value('wrap_keys') ?>" class="form-control">
+	        					<input type="text" name="wrap_keys" id="wrap_keys" placeholder="clave1, clave2, clave3" value="<?php echo set_value('wrap_keys', $documento['palabras_clave']) ?>" class="form-control">
 	        					<span class="help-block">
 	        						Digita palabras claves alucivas al documento, ingresalas separadas por comas(,)
 	        					</span>
@@ -120,7 +132,7 @@
 							<?php echo form_error('userfile', '<div class="alert alert-danger">', '</div>'); ?>
 							<?php echo $error_file ?>
 	        				
-	        				<input class="btn btn-primary btn-block btn-success" type="submit" title="Presiona para enviar" value="Crear"> 
+	        				<input class="btn btn-primary btn-block btn-success" type="submit" title="Presiona para enviar" value="Modificar"> 
 						</form>
 					</div>						
 				</div>

@@ -9,7 +9,7 @@
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url('css/style.css');?>">
 	</head>
 
-	<body>
+	<body uri="<?php echo base_url(); ?>">
 		
 		<nav class="navbar navbar-default navbar-fixed-top">	
 			<div class="container-fluid"> 	
