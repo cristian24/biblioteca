@@ -8,6 +8,13 @@ class Autores extends CI_Controller {
 		$this->load->model('autores_model');
 	}
 
+    /**
+     * Funcion que verifica si es una peticion ajax si lo es
+     * imprime el resultado de la peticion, de lo contrario
+     * redirige a la pagina 404. 
+     * @return html recibe los datos de una peticion o redirige
+     *              a un 404.
+     */
     public function list_autores()
     {
         if($this->input->is_ajax_request())
@@ -29,6 +36,14 @@ class Autores extends CI_Controller {
         }
     }
 
+    /**
+     * Funcion que verifica si es una peticion ajax si lo es verifica
+     * los datos de un formulario si son correctos se envi una peticion
+     * ajax con estos datos y luego se recibe su respuesta, si la peticion
+     * se ejecuta satisfactoriamente se envia en forma de json un mensaje 
+     * de satus success y los datos de la peticion.
+     * @return void Respuesta de la peticion.
+     */
 	public function create_rqst()
 	{
 		if($this->input->is_ajax_request())
@@ -47,18 +62,28 @@ class Autores extends CI_Controller {
         		$data = array('res' => 'success', 'name' => $nombre, 'rqst' => $peticion);
         		echo json_encode($data);
         	}
-
         }else
         {
         	show_404();
         }
 	}
 
+    /**
+     * Imprime la vista de creacion de autores.
+     * @return void Renderizado de la vista creacion de autores.
+     */
 	public function create()
 	{
 		$this->load->view('autores/create');
 	}
 
+    /**
+     * Funcion que ejecuta una consulta de modificacion de datos, de un autor
+     * a traves de una peticion ajax, despues de validar los datos de entrada, se 
+     * envian a traves de json el resultado de la peticion.
+     * @param  String $id identificador del autor a modificar
+     * @return void     se imprime por medio de json el resultado de la peticion
+     */
     public function update_rqst($id)
     {
         if($this->input->is_ajax_request())
@@ -82,6 +107,12 @@ class Autores extends CI_Controller {
         }
     }
 
+    /**
+     * Envio de peticion por medio de ajax y json
+     * @param  boolean $query filtro de busqueda, si no se envia nada
+     *                        se retorna todos los autores.
+     * @return void         respuesta de la peticion
+     */
     public function query_rqst($query=FALSE)
     {
         if($this->input->is_ajax_request())
@@ -110,6 +141,10 @@ class Autores extends CI_Controller {
         }
     }
 
+    /**
+     * Funcion que imprime la vista de busqueda de autores.
+     * @return void Renderizado de la vista de busqueda de autores.
+     */
     public function query()
     {
         $this->session->acceso('Catalogador');

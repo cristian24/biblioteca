@@ -281,8 +281,7 @@ class Usuarios extends CI_Controller {
         {
             $data['link'] = base_url().'index.php/usuarios/salir/true';
             $this->load->view('usuarios/salir', $data);
-        }
-        
+        }        
     }
 
     /**
@@ -297,7 +296,8 @@ class Usuarios extends CI_Controller {
             $arreglo_session = array(
                     'is_logued_in' => TRUE,                 
                     'username' => $valor['login'],
-                    'perfil' => $valor['perfil']
+                    'perfil' => $valor['perfil'],
+                    'id_user' => $valor['id']
                     );
             $this->session->set_userdata($arreglo_session);
             //redirect('home/index');
@@ -389,6 +389,57 @@ class Usuarios extends CI_Controller {
     }
 
     /**
+     * Funcion que carga la vista de actualizacion de informacion del usuario logueado
+     * despues de validados los datos se hace la peticion al modelo de actualizacion 
+     * si esta no falla se redirige de nuevo a esta funcion pero con el valor que entra 
+     * como parametro a true(esta bandera imprime un mensaje de exito).
+     * @param  boolean $is_ok bandera que imprime mensaje de exito
+     * @return void         Rendericado de la vista de actualizacion de info.
+     */
+    function update_info($is_ok=FALSE)
+    {
+        $id = $this->session->userdata('id_user');
+        $this->session->acceso('Usuario');
+        $usuario = $this->usuario_model->get_user_id($id);
+        $this->form_validation->set_rules('nombre', 'Nombre', 'trim|required|min_length[3]|max_length[50]|xss_clean');
+        $this->form_validation->set_rules('login', 'Login', 'trim|required|min_length[3]|max_length[50]');        
+        $this->form_validation->set_rules('correo', 'Correo', 'trim|required|max_length[100]|valid_email');
+        $this->form_validation->set_rules('telefono', 'Telefono', 'trim|required|numeric|min_length[6]|max_length[10]');        
+
+        $this->form_validation->set_value('nombre', $usuario['nombre']);
+        $this->form_validation->set_value('login', $usuario['login']);
+
+        if($this->form_validation->run() === FALSE)
+        {
+            $data['libros_class'] = '';
+            $data['usuario_class'] = '';
+            $data['title'] = 'Actualizar Información';
+            $data['title_section'] = 'Actualiza tus Datos';
+            $data['subtitle_section'] = 'Actualiza tus datos personales';
+            $data['usuario_class'] = 'active';
+            $data['section_actual'] = 'Actualiza tus Datos';
+            $data['usuario'] = $usuario;
+            $data['id_usuario'] = $id;
+            if($is_ok)
+                $data['mensaje_ok'] = TRUE;
+            else
+                $data['mensaje_ok'] = FALSE;
+
+            $this->load->view('template/header', $data);
+            $this->load->view('usuarios/update_info', $data);
+            $this->load->view('template/footer');
+        }else
+        {
+            $nombre = $this->input->post('nombre');
+            $login = $this->input->post('login');
+            $correo = $this->input->post('correo');
+            $telefono = $this->input->post('telefono');
+            $response = $this->usuario_model->update_user($id, $nombre, $correo, $login, $telefono);
+            redirect('usuarios/update_info/true');
+        }
+    }
+
+    /**
      * Carga la vista de actualización de usuarios
      * @param  integer  $id    Representa el id del usuario a actualizar
      * @param  boolean $is_ok bandera que se utiliza para saber si la actualizacion tuvo éxito
@@ -470,6 +521,281 @@ class Usuarios extends CI_Controller {
         }        
         $data['link'] = base_url().'index.php/usuarios/delete/'.$id.'/true';
         $this->load->view('usuarios/delete_user', $data);
+    }
+
+    public function update_pass()
+    {
+        $id = $this->session->userdata('id_user');
+        $data['libros_class'] = '';
+        $data['usuario_class'] = '';
+        $data['title'] = 'Modificar Contraseña';
+        $data['title_section'] = 'Modificar Contraseña';
+        $data['subtitle_section'] = 'Modifica tu contraseña de usuario';
+        $data['usuario_class'] = '';
+        $data['section_actual'] = 'Modificar Contraseña';
+        $data['usuario'] = $this->usuario_model->get_user_id($id);
+        $this->load->view('template/header', $data);
+        $this->load->view('usuarios/update_pass', $data);
+        $this->load->view('template/footer');       
+    }
+
+    public function update_pass_rqst()
+    {
+        if($this->input->is_ajax_request())
+        {
+            $this->form_validation->set_rules('pass_last', 'Contraseña Actual', 'trim|required');
+            $this->form_validation->set_rules('pass', 'Contraseña', 'trim|required|min_length[3]|max_length[50]');
+            $this->form_validation->set_rules('pass2', 'Repetir Contraseña', 'required|matches[pass]');
+                   
+            if($this->form_validation->run() === FALSE)
+            {
+                $data = array(
+                    'pass_last' =>      form_error('pass_last'),
+                    'pass'      =>      form_error('pass'),
+                    'pass2'     =>      form_error('pass2'),
+                    'res'       =>      'error'
+                );
+                echo json_encode($data);
+            }else
+            {
+                $id = $this->session->userdata('id_user');
+                $usuario = $this->usuario_model->get_user_id($id);
+                $pass_actual = $usuario['pass'];
+                $pass_last = do_hash($this->input->post('pass_last'), 'md5');                
+                
+                //se compara lo guadado en la base de datos y lo que el usuario
+                //digita como verificacion de la contraseña actual
+                if($pass_last === $pass_actual)
+                {
+                    //si entra aquí se procede a actualizar la contraseña
+                    $pass = do_hash($this->input->post('pass'), 'md5');
+                    $response = $this->usuario_model->update_pass($id, $pass);
+                    $data = array(
+                        'res'           =>      'succes',
+                        'response'     =>      $response
+                    );
+                    echo json_encode($data);
+                }else
+                {
+                    $data = array(
+                        'res'       =>  'no equal',
+                        'mensaje'   =>  'No corresponde a su contrasena Actual, porfavor digitela de nuevo'
+                    );
+                    echo json_encode($data);
+                    return false;
+                }
+            }
+        }else
+        {
+            show_404();
+        }
+    }
+
+    public function recover_data($is_pass=FALSE)
+    {
+        if($is_pass)
+        {
+            $id = $this->session->userdata('id_user');
+            $data['libros_class'] = '';
+            $data['usuario_class'] = '';
+            $data['title'] = 'Recuperar Contraseña';
+            $data['title_section'] = 'Recuperar Contraseña';
+            $data['subtitle_section'] = 'Verifica tu correo, para continuar';
+            $data['usuario_class'] = '';
+            $data['section_actual'] = 'Recuperación Contraseña';
+            if(empty($id))
+            {
+                $data['usuario'] = FALSE;
+            }else
+            {
+                $data['usuario'] = $this->usuario_model->get_user_id($id);
+            }            
+            $data['type_recover'] = 'pass';
+
+            $this->form_validation->set_rules('correo', 'Correo', 'trim|required|max_length[100]|valid_email');
+            if($this->form_validation->run() === FALSE)
+            {
+                $this->load->view('template/header', $data);
+                $this->load->view('usuarios/recover_data', $data);
+                $this->load->view('template/footer');
+            }else
+            {
+                $correo = $this->input->post('correo');
+                $datos = $this->usuario_model->get_pass_login($correo);
+                
+                if( ! empty($datos))
+                {
+                    //codigo de como enviar el email extraido desde
+                    //http://uno-de-piera.com/enviar-emails-en-codeigniter-con-smtp-desde-yahoo-y-gmail/
+                    $this->load->library('email');
+                    $configGmail = array(
+                        'protocol' => 'smtp',
+                        'smtp_host' => 'ssl://smtp.gmail.com',
+                        'smtp_port' => 465,
+                        'smtp_user' => 'correoappcristian@gmail.com',
+                        'smtp_pass' => 'cibercorreoapp789',
+                        'mailtype' => 'html',
+                        'charset' => 'utf-8',
+                        'newline' => "\r\n"
+                    );    
+         
+                    //cargamos la configuración para enviar con gmail
+                    $this->email->initialize($configGmail);
+                    $this->email->from('BiblioCristian');
+                    $this->email->to($correo);
+                    $this->email->subject('Recuperacion de Contraseña');
+                    $this->email->message('<h1>Recuperación de Contraseña BiblioCristian</h1>'.
+                                          '<strong>Hola, '.$datos['login'].':</strong>'.
+                                          '<p>Recientemente solicitaste la recuperación de tú contraseña '.
+                                          'para continuar con el proceso has click '.
+                                          '<a href="'.base_url().'index.php/usuarios/recover_pass/'.$datos['id'].'/'.$datos['code'].'">aquí</a>.</p>'.
+                                          '<p>Tenga en cuenta que este enlace funcionara solo una vez. '.
+                                          'Si tú no has realizado esta petición simplemente ignora este mensaje '.
+                                          'te recordamos cambiar tu clave regularmente.</p>'.
+                                          'Atentamente<br>'.
+                                          'Equipo BiblioCristian');
+                    if($this->email->send())
+                    {
+                        $data['mensaje_ok'] = 'Se ha enviado un mensaje a tu correo, '.
+                                            'revisalo y accede en el enlace para continuar con el proceso';
+                    }else
+                    {
+                        $data['mensaje_err'] = 'Se presento un error enviando el correo,'.
+                                                ' porfavor intenetelo de nuevo';
+                    }                    
+                    //echo $this->email->print_debugger(); //descomentar para el debuger   
+
+                    $this->load->view('template/header', $data);
+                    $this->load->view('usuarios/recover_data', $data);
+                    $this->load->view('template/footer');
+                }else
+                {
+                    $data['mensaje_err'] = 'Este correo no esta registrado, verifique que este bien escrito';
+                    $this->load->view('template/header', $data);
+                    $this->load->view('usuarios/recover_data', $data);
+                    $this->load->view('template/footer');
+                }
+            }
+        }else
+        {
+            //Recuperacion de Login
+            $data['libros_class'] = '';
+            $data['usuario_class'] = '';
+            $data['title'] = 'Recuperar Login';
+            $data['title_section'] = 'Recuperar Login';
+            $data['subtitle_section'] = 'Ingresar correo asociado a esta cuenta';
+            $data['usuario_class'] = '';
+            $data['section_actual'] = 'Recuperación Login';
+            $data['usuario'] = FALSE;          
+            $data['type_recover'] = 'login';
+            $this->form_validation->set_rules('correo', 'Correo', 'trim|required|max_length[100]|valid_email');
+            if($this->form_validation->run() === FALSE)
+            {
+                $this->load->view('template/header', $data);
+                $this->load->view('usuarios/recover_data', $data);
+                $this->load->view('template/footer');
+            }else
+            {
+                $correo = $this->input->post('correo');
+                $datos = $this->usuario_model->get_pass_login($correo);
+                
+                if( ! empty($datos))
+                {
+                    //codigo de como enviar el email extraido desde
+                    //http://uno-de-piera.com/enviar-emails-en-codeigniter-con-smtp-desde-yahoo-y-gmail/
+                    $this->load->library('email');
+                    $configGmail = array(
+                        'protocol' => 'smtp',
+                        'smtp_host' => 'ssl://smtp.gmail.com',
+                        'smtp_port' => 465,
+                        'smtp_user' => 'correoappcristian@gmail.com',
+                        'smtp_pass' => 'cibercorreoapp789',
+                        'mailtype' => 'html',
+                        'charset' => 'utf-8',
+                        'newline' => "\r\n"
+                    );         
+                    //cargamos la configuración para enviar con gmail
+                    $this->email->initialize($configGmail);
+                    $this->email->from('BiblioCristian');
+                    $this->email->to($correo);
+                    $this->email->subject('Recuperacion de Login');
+                    $this->email->message('<h1>Recuperación de Contraseña BiblioCristian</h1>'.
+                                          '<strong>Hola, '.$datos['login'].':</strong>'.
+                                          '<p>Recientemente solicitaste la recuperación de tú Login. '.
+                                          'Estos son los Datos de tu cuenta</p> '.
+                                          '<p><strong>Login:</strong> '.$datos['login'].'</p>'.
+                                          '<p>Si tú no has realizado esta petición simplemente ignora este mensaje '.
+                                          'te recordamos cambiar tu clave regularmente.</p>'.
+                                          'Atentamente<br>'.
+                                          'Equipo BiblioCristian');
+                    if($this->email->send())
+                    {
+                        $data['mensaje_ok'] = 'Se ha enviado un mensaje a tu correo, con los datos de tu cuenta '.
+                                            'revisalo e intenta acceder de nuevo';
+                    }else
+                    {
+                        $data['mensaje_err'] = 'Se presento un error enviando el correo,'.
+                                                ' porfavor intenetelo de nuevo';
+                    }
+                    $this->load->view('template/header', $data);
+                    $this->load->view('usuarios/recover_data', $data);
+                    $this->load->view('template/footer');
+                }else
+                {
+                    $data['mensaje_err'] = 'Este correo no esta registrado, verifique que este bien escrito';
+                    $this->load->view('template/header', $data);
+                    $this->load->view('usuarios/recover_data', $data);
+                    $this->load->view('template/footer');
+                }
+            }
+        }
+    }
+
+    public function recover_pass($id, $code)
+    {
+        $peticion_valida = $this->usuario_model->get_code($code, $id);
+        if(empty($peticion_valida))
+        {
+            redirect('restringido');
+        }
+        $data['libros_class'] = '';
+        $data['usuario_class'] = '';
+        $data['title'] = 'Recuperar Contraseña';
+        $data['title_section'] = 'Recuperar Contraseña';
+        $data['subtitle_section'] = 'Crea la nueva Contraseña';
+        $data['usuario_class'] = '';
+        $data['section_actual'] = 'Recuperar Contraseña';
+        $data['id'] = $id;
+        $data['code'] = $code;
+        $this->form_validation->set_rules('pass', 'Contraseña', 'trim|required|min_length[3]|max_length[50]');
+        $this->form_validation->set_rules('pass2', 'Repetir Contraseña', 'trim|required|matches[pass]');
+        if($this->form_validation->run() === FALSE)
+        {
+            $this->load->view('template/header', $data);
+            $this->load->view('usuarios/recover_pass', $data);
+            $this->load->view('template/footer');
+        }else
+        {
+            $pass = $this->input->post('pass');
+            $response = $this->usuario_model->update_pass($id,$pass);
+            if( ! empty($response))
+            {
+                $data['mensaje_ok'] = 'Contraseña Actualizada, Accede de nuevo con esta Contraseña';
+                $this->usuario_model->update_code($id, $code);
+                $this->load->view('template/header', $data);
+                $this->load->view('usuarios/recover_pass', $data);
+                $this->load->view('template/footer');
+                $this->session->sess_destroy();
+            }else
+            {
+                $data['mensaje_err'] = 'Se presento un error actualizando la contraseña, debera '.
+                                        'Realizar todo el procedimiento de nuevo.';
+                $this->load->view('template/header', $data);
+                $this->load->view('usuarios/recover_pass', $data);
+                $this->load->view('template/footer');
+                $this->session->sess_destroy();
+            }
+        }
     }
 }
 

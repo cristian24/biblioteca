@@ -11,6 +11,71 @@ var base_url = $('body').attr('uri')+'index.php/';
  * ----------------------------------------------------------------------------------------
  */
 
+function update_pass()
+{
+    $.ajax({
+        url: base_url+'usuarios/update_pass_rqst',
+        type: 'POST',
+        data: $('#form_update_pass').serialize(),
+        success: function(data){       
+            var json = JSON.parse(data);
+            $('#error_pass_last,#error_pass,#error_pass2').html('').css('display', 'none');
+            if(json.res === 'error')
+            {
+                if(json.pass_last)
+                {
+                    $('#error_pass_last').append(json.pass_last).css('display','block');
+                }
+                if(json.pass)
+                {
+                    $('#error_pass').append(json.pass).css('display','block');
+                }
+                if(json.pass2)
+                {
+                    $('#error_pass2').append(json.pass2).css('display','block');
+                }
+            }else if(json.res === 'no equal')
+            {
+                $('#error_pass_last').append(json.mensaje).css('display','block');
+                $('#camp_pass').val('');
+                $('#camp_pass2').val('');
+            }else
+            {
+                if(json.response)
+                {
+                    mostrar_mensaje(
+                                    'Mensaje BiblioCristian',
+                                    '<strong class="alert alert-success">Contrasena Actualizada Exitosamente</strong>'
+                                    );
+                    setTimeout(function()
+                    {
+                        $('#camp_pass_last').val('');
+                        $('#camp_pass').val('');
+                        $('#camp_pass2').val('');
+                        ocultar_mensaje();
+                    }, 2000);
+
+                }else
+                {
+                    $('#camp_pass').val('');
+                    $('#camp_pass2').val('');
+                    mostrar_mensaje(
+                                    'Mensaje BiblioCristian',
+                                    '<strong class="alert alert-danger">Error Actualizando Contrasena</strong>'
+                                    );
+                    setTimeout(function()
+                    {
+                        ocultar_mensaje();
+                    }, 2000);
+                }
+            }
+        },
+        error: function(xhr){
+            console.log("error: "+xhr);
+        }
+    });
+}
+
 function llenar_lista_editoriales()
 {
     $.ajax({
@@ -356,6 +421,12 @@ function query_docs(query, campo, function_success, function_error)
  * ----------------------------------------------------------------------------------------
  * ----------------------------------------------------------------------------------------
  */
+
+$('#form_update_pass').on('submit', function(e)
+{    
+    update_pass();
+    e.preventDefault();
+});
 
 /**
  * Evento que es disparado cuando se hace click sobre un link

@@ -59,8 +59,8 @@
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu" role="menu">
-								<li><a href="#">Modificar Contraseña</a></li>
-								<li><a href="#">Modificar Info</a></li>
+								<li><?php echo anchor('usuarios/update_pass', 'Modificar Contraseña'); ?></li>
+								<li><?php echo anchor('usuarios/update_info', 'Modificar Info'); ?></li>
 								<li class="divider"></li>
 								<li><?php echo anchor('usuarios/salir', 'Salir', 
 									array('data-toggle' => 'modal', 

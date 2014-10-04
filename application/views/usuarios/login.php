@@ -21,7 +21,7 @@
 				<?php echo form_open('usuarios/login_rqst', array('class' => 'form-signin', 'id' => 'form_login', 'role' => 'form')); ?>
 				    <h1 class="form-signin-heading">
 				    	<?php echo $title_section; ?>
-				    </h1>			    
+				    </h1>
 
 				    <div class="form-group">
 				    	<input class="form-control" id="inputLogin" value="<?php echo set_value('login'); ?>" placeholder="Login" name="login" type="text" autofocus>
@@ -36,7 +36,9 @@
 					<div class="alert alert-danger error" id="error_pass">					
 						<?php echo validation_errors(); ?>
 					</div>		        
-			        <button class="btn btn-primary btn-block btn-success" type="submit" title="Presiona para enviar">Ingresar</button>		        
+			        <button class="btn btn-primary btn-block btn-success" type="submit" title="Presiona para enviar">Ingresar</button>
+			        <?php echo anchor('usuarios/recover_data/true', '¿Has olvidado tú contraseña?'); ?> |
+			        <?php echo anchor('usuarios/recover_data', '¿Has olvidado tú Login?'); ?>	        
       			</form>										
 			</div>
 		</section>

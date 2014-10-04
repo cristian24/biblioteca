@@ -18,6 +18,16 @@ class Usuario_model extends CI_Model {
 		$this->load->helper('security');		
 	}
 
+    public function generate_code()
+    {
+        $str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+        $cad = "";
+        for($i=0;$i<10;$i++) {
+            $cad .= substr($str,rand(0,62),1);
+        }
+        return $cad;
+    }
+
     public function get_user_id($id)
     {
         $this->db->where(array('id' => $id));
@@ -49,6 +59,23 @@ class Usuario_model extends CI_Model {
     }
 
     /**
+     * Obtener el login y password de un usuario de acuerdo a su corre
+     * @param  String $correo campo unico para cada usuario.
+     * @return Array()         array con los datos del usuario, se retorna un array
+     *                         vacio si la consulta no arroja resultados.
+     */
+    public function get_pass_login($correo)
+    {
+        $this->db->select('id, login, pass, code');
+        $this->db->where('correo', $correo);
+        $query = $this->db->get('usuarios');
+        if($query->num_rows() > 0)
+        {
+            return $query->row_array();
+        }
+    }
+
+    /**
      * Consulta para obtener usuario de acuerdo a su nombre
      * se hace un like para hacer la busqueda por nombre o login.
      * @param  [String] $login Alusivo al login o nombre del usuario
@@ -66,9 +93,34 @@ class Usuario_model extends CI_Model {
         $query = $this->db->get('usuarios'); 
         if($query->num_rows() > 0)
         {
-            return $query->result_array();
+            return $query->row_array();
         }
         return 'no found';
+    }
+
+    /**
+     * Busqueda de un codigo, si exite se retorna el codigo, caso contrario
+     * se retorna un false.
+     * @param  String $code codigo a buscar
+     * @return array()/false       array con el valor solicitado o false.
+     */
+    public function get_code($code, $id=false)
+    {
+        if($id)
+        {
+            $data = array('code' => $code, 'id' => $id);
+        }else
+        {
+            $data = array('code' => $code);
+        }
+        $this->db->select('code');        
+        $this->db->where($data);
+        $query = $this->db->get('usuarios'); 
+        if($query->num_rows() > 0)
+        {
+            return $query->row_array();
+        }
+        return FALSE;
     }
 
     /**
@@ -82,26 +134,38 @@ class Usuario_model extends CI_Model {
      */
     public function set_user($nombre, $telefono, $correo, $login, $pass, $perfil=FALSE)
     {
+        //generamos codigo
+        $code = $this->generate_code();
+        $existe = $this->get_code($code);
+
+        //si ya existe ese codigo generamos uno nuevo
+        while ( ! empty($existe)) {
+            $code = $this->generate_code();
+            $existe = $this->get_code($code);
+        }
+
     	if($perfil)
     	{
     		$data = array(
-    				'nombre' => $nombre,
-    				'login'  => $login,
-    				'pass'	 => do_hash($pass, 'md5'),
-    				'correo' => $correo,
-    				'telefono' => $telefono,
-    				'perfil' => $perfil
+    				'nombre'    => $nombre,
+    				'login'     => $login,
+    				'pass'	    => do_hash($pass, 'md5'),
+    				'correo'    => $correo,
+    				'telefono'  => $telefono,
+    				'perfil'    => $perfil,
+                    'code'      => $code
     			);
     		return $this->db->insert('usuarios', $data);
     	}else
     	{
     		$data = array(
-    				'nombre' => $nombre,
-    				'login'  => $login,
-    				'pass'	 => do_hash($pass, 'md5'),
-    				'correo' => $correo,
-    				'telefono' => $telefono,
-    				'perfil' => 'Usuario'
+    				'nombre'    => $nombre,
+    				'login'     => $login,
+    				'pass'	    => do_hash($pass, 'md5'),
+    				'correo'    => $correo,
+    				'telefono'  => $telefono,
+    				'perfil'    => 'Usuario',
+                    'code'      => $code
     			);
     		return $this->db->insert('usuarios', $data);
     	}
@@ -147,6 +211,31 @@ class Usuario_model extends CI_Model {
             $this->db->where('id', $id);
             $this->db->update('usuarios', $data); 
         }
+    }
+
+    public function update_pass($id, $pass)
+    {
+        $data = array(
+                    'pass' => do_hash($pass, 'md5')
+                );
+        $this->db->where('id', $id);
+        return $this->db->update('usuarios', $data);
+    }
+
+    public function update_code($id, $code_last)
+    {
+        $code = $this->generate_code();
+        $existe = $this->get_code($code);
+
+        //si ya existe ese codigo generamos uno nuevo
+        while ( ! empty($existe)) {
+            $code = $this->generate_code();
+            $existe = $this->get_code($code);
+        }
+        $data = array('code' => $code);
+        $this->db->where('id', $id);
+        $this->db->where('code', $code_last);
+        return $this->db->update('usuarios', $data);
     }
 
     /**
