@@ -1,5 +1,10 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * Controlador de peticiones restringidas.
+ * @author Cristia Andres Cuspoca <cristian.cuspoca@correounivalle.edu.co>
+ * @version 1.0
+ */
 class Restringido extends CI_Controller {
 
 	public function index()

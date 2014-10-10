@@ -1,5 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * Controlador del módulo Documentos, en esta clase se hacen y responden todas las peticiones
+ * relacionadas con la gestión de Documentos, se encarga de cargar la vista adecuada para cada 
+ * petición, extiende del core del controller de codeigniter y carga el modelo de Documentos.
+ * @author Cristia Andres Cuspoca <cristian.cuspoca@correounivalle.edu.co>
+ * @version 1.0
+ */
 class Libros extends CI_Controller {
 
 	/**
@@ -12,6 +19,30 @@ class Libros extends CI_Controller {
 		$this->load->model('editoriales_model');
 	}
 
+	/**
+	 * Función que carga la vista de resultados de búsqueda hecha por un usuario
+	 * normal, debido a que esta petición se hace de manera dinámica, verificamos
+	 * que sea una llamado ajax, caso contrario mostramos el error 404.
+	 * @return void renderizado de la vista.
+	 */
+	function rqst_view_query()
+	{
+		if($this->input->is_ajax_request())
+		{
+			$this->load->view('libros/result_query');
+		}else
+		{
+			show_404();
+		}
+	}
+
+	/**
+	 * Función auxiliar que se encarga de omitir de una cadena pasada por parámetro
+	 * pronombres, preposiciones, tambien de convertir el texto a minúscula.
+	 * @param  string $string   cadena a procesar
+	 * @param  string $encoding codificación alfanumérica.
+	 * @return array()          Resultado de la palabra procesada.
+	 */
 	function tags($string, $encoding = 'ISO-8859-1'){
         $string = trim(strip_tags(html_entity_decode(urldecode($string))));
         if(empty($string)){ return false; }
@@ -41,6 +72,13 @@ class Libros extends CI_Controller {
         return $m;
     }
 
+    /**
+     * Función auxiliar que elimina espacio en blanco al inicio y al final, y convierte 
+     * los espacios en blanco en caracteres '|', además de reemplazar múltiples espacios, 
+     * por uno solo.
+     * @param  String $palabra Texto a procesar
+     * @return String          Texto Procesado.
+     */
 	public function procesar_palabra($palabra){
         if(!empty($palabra)){
             $valor = $this->tags($palabra);
@@ -55,9 +93,9 @@ class Libros extends CI_Controller {
     }
 	
 	/**
-	 * Carga la vista principal del modulo de documentos
-	 * @param  boolean $mensaje se envia o no mensaje de exito o error en la creacion de un usuario
-	 * @return void           se imprime la vista principal del modúlo de documentos.
+	 * Carga la vista principal del módulo de documentos
+	 * @param  boolean $mensaje se envía o no mensaje de éxito o error en la creación de un usuario
+	 * @return void             se imprime la vista principal del módulo de documentos.
 	 */
 	public function index($mensaje = FALSE)
 	{		
@@ -186,6 +224,15 @@ class Libros extends CI_Controller {
         }		
 	}
 
+	/**
+	 * Función que responde a una petición ajax de búsqueda de documentos, si no es un llamado
+	 * ajax se responde con un 404, caso contrario se verifica el resultado de la petición 
+	 * al modelo de datos, si la respuesta del modelo esta vacía significa que no se encontró
+	 * el documento buscado, caso contrario se envían a través de json el resultado de la 
+	 * consulta.
+	 * @param  String $query  Filtro de búsqueda.
+	 * @return void           Renderizado de los resultados de búsqueda.
+	 */
 	public function query_rqst($query)
 	{
 		if($this->input->is_ajax_request())
@@ -207,6 +254,11 @@ class Libros extends CI_Controller {
 		}
 	}
 
+	/**
+	 * Renderiza vista de búsqueda de documentos, se muestran inicialmente todos los documentos de 
+	 * la base de datos.
+	 * @return void     Renderizado de la vista.
+	 */
 	public function query()
 	{
 		$this->session->acceso('Catalogador');
@@ -238,6 +290,13 @@ class Libros extends CI_Controller {
 		$this->load->view('template/footer');				
 	}
 
+	/**
+	 * Renderiza vista de actualización de documentos.
+	 * @param  String  $id         Id del documento a actualizar.
+	 * @param  boolean $mensaje_ok Funciona como bandera para imprimir mensaje de success(true)
+	 * ó error(false).
+	 * @return void                Renderizado de la vista.
+	 */
 	public function update($id, $mensaje_ok=FALSE)
 	{
 		if( ! empty($mensaje_ok) && $mensaje_ok === 'OK')
@@ -363,10 +422,15 @@ class Libros extends CI_Controller {
 		}
 	}
 
+
+	/**
+	 * Función que hace petición al modelo de eliminación de documento.
+	 * @param  String $id Id del documento a eliminar.
+	 * @return void       redirecciona a la vita de búsqueda.
+	 */
 	public function delete($id)
 	{
-		$this->db->where('id', $id);
-        $this->db->delete('documento');
+		$this->libros_model->delete($id);
         redirect('libros/query/');
 	}
 }

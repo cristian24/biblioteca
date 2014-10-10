@@ -23,7 +23,4 @@
 	     		<table class='table table-hover table-striped'>
 	     		</table>
 			</div>
-
-			
-
 		</section>	

@@ -1,5 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * Modelo del módulo editoriales, en esta clase se hacen todas las consultas
+ * relacionadas con la gestión de editoriales, extiende del core del modelo
+ * de codeigniter, carga la base de datos.
+ * @author Cristia Andres Cuspoca <cristian.cuspoca@correounivalle.edu.co>
+ * @version 1.0
+ */
 class Editoriales_model extends CI_Model {
 
 	/**
@@ -24,6 +31,11 @@ class Editoriales_model extends CI_Model {
         }
 	}
 
+	/**
+	 * Crear un nuevo autor.
+	 * @param  String $nombre nombr del nuevo editorial
+	 * @return true/false     true si tiene extito, fale si falla.
+	 */
 	public function create($nombre)
 	{
 		$data = array('nombre' => $nombre);
@@ -31,12 +43,12 @@ class Editoriales_model extends CI_Model {
 	}
 
 	/**
-	 * Consulta los autores que cumplen con el valor que se envia como
-	 * parametro.
-	 * @param  String $query valor de busqueda puede ser un id o un nombre
+	 * Consulta los autores que cumplen con el valor que se envía como
+	 * Parámetro.
+	 * @param  String $query valor de búsqueda puede ser un id o un nombre
 	 * @return array        retorna un array de autores que coinciden con
-	 *                      el valor de busqueda, en caso de fallo
-	 *                      retorna un array vacio.
+	 *                      el valor de búsqueda, en caso de fallo
+	 *                      retorna un array vacío.
 	 */
 	public function get_editoriales_by($query)
 	{
@@ -56,8 +68,8 @@ class Editoriales_model extends CI_Model {
 	/**
 	 * Actualizar un Editorial
 	 * @param  String $id     id del autor a actualizar.
-	 * @param  String $nombre nombre que tendra el autor
-	 * @return true/false     true si exito, false si falla
+	 * @param  String $nombre nombre que tendrá el autor
+	 * @return true/false     true si éxito, false si falla
 	 */
 	public function update($id, $nombre)
 	{

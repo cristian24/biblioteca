@@ -2,6 +2,7 @@ $(document).ready(function($) {
 
 //var base_url = 'http://localhost/biblioteca/index.php/'
 var base_url = $('body').attr('uri')+'index.php/';
+var url_file = $('body').attr('uri');
 
 /**
  * ----------------------------------------------------------------------------------------
@@ -395,14 +396,14 @@ $('#edit_editorial_modal').on('submit', '#form_edit_editorial', function(e)
 });
 
 /**
- * Peticion ajax generica para hacer una busqueda de un documento de acuerdo
- * al parametro de entrada query.
- * @param  {String} query            filtro de busqueda.
- * @param  {String} campo            url de la peticion("funcion en php qu atiende la peticion
+ * Petición ajax genérica para hacer una búsqueda de un documento de acuerdo
+ * al parámetro de entrada query.
+ * @param  {String} query            filtro de búsqueda.
+ * @param  {String} campo            url de la petición("función en php que atiende la petición
  *                                   respondiendo con un mensaje o los datos solicitados").
- * @param  {String} function_success funcion llamada cuando la peticion tiene exito.
- * @param  {String} function_error   funcion llamada cuando la peticion falla.
- * @return {json}                    datos en formto json.
+ * @param  {String} function_success función llamada cuando la petición tiene éxito.
+ * @param  {String} function_error   función llamada cuando la petición falla.
+ * @return {json}                    datos en formato json.
  */
 function query_docs(query, campo, function_success, function_error)
 {
@@ -431,7 +432,7 @@ $('#form_update_pass').on('submit', function(e)
 /**
  * Evento que es disparado cuando se hace click sobre un link
  * de una tabla de resultados de autores, llama una ventana
- * modal de edicion de autores.
+ * modal de edición de autores.
  * @param  {evento} e evento generado al hacer click.
  */
 $('body').on('click', '#resultados_autors a', function(e){    
@@ -451,7 +452,7 @@ $('body').on('click', '#resultados_autors a', function(e){
 /**
  * Evento que es disparado cuando se hace click sobre un link
  * de una tabla de resultados de editoriales, llama una ventana
- * modal de edicion de editoriales.
+ * modal de edición de editoriales.
  * @param  {evento} e evento generado al hacer click sobre un link.
  */
 $('body').on('click', '#resultados_editoriales a', function(e){    
@@ -469,7 +470,7 @@ $('body').on('click', '#resultados_editoriales a', function(e){
 
 /**
  * Evento generado cuando se suelta una tecla sobre el campo
- * con id "#camp_query_autor", hace la peticion de busqueda de 
+ * con id "#camp_query_autor", hace la petición de búsqueda de 
  * autores.
  * @param  {event} e.
  */
@@ -480,7 +481,7 @@ $('#camp_query_autor').on('keyup', function(e){
 
 /**
  * Evento generado cuando se suelta una tecla sobre el campo
- * con id "#camp_query_editorial", hace la peticion de busqueda
+ * con id "#camp_query_editorial", hace la petición de búsqueda
  * de editoriales.
  * @param  {event} e.
  */
@@ -491,7 +492,7 @@ $('#camp_query_editorial').on('keyup', function(e){
 
 /**
  * Evento generado cuando se suelta una tecla sobre el campo
- * con id "#camp_query_doc", si el tamano lenght de lo que se obtiene
+ * con id "#camp_query_doc", si el tamaño lenght de lo que se obtiene
  * del campo es menor de 2 no se hace la solicitud, este evento hace una
  * peticion de busqueda hecha por un usuario catalogador, hace uso de la 
  * funcion de peticion query_docs(query, url, funcion_success, funtion_error).
@@ -507,11 +508,29 @@ $('#camp_query_doc').on('keyup', function(e){
 });
 
 /**
- * Evento generado al hacer click sobre el boton buscar, se toma
+ * Evento generado cuando se suelta una tecla sobre el campo
+ * con id "#query_docs_header", si el tamano lenght de lo que se obtiene
+ * del campo es menor de 2 no se hace la solicitud, este evento hace una
+ * peticion de busqueda hecha por un usuario cualquiera, hace uso de la 
+ * funcion de peticion query_docs(query, url, funcion_success, funtion_error).
+ * @param  {event} e.
+ */
+$("body").on("keyup", "#query_docs_header", function(e)
+{
+    var query = $(this).val();
+    if(query.length > 2)
+    {
+        var url = base_url+'libros/query_rqst/';
+        query_docs(query, url, success_query_docs, function(xhr){console.log('error de servidor')});
+    }
+});
+
+/**
+ * Evento generado al hacer click sobre el botón buscar, se toma
  * el valor actual del campo con id "#camp_query_docs", este evento
- * hace la peticion de busqueda de documentos, qu hace un usuario normal.
+ * hace la petición de búsqueda de documentos, que hace un usuario normal.
  * @param  {event} e datos y valores del evento generado.
- * @return {void}   se hace una peticion ajax que trae los documentos
+ * @return {void}   se hace una petición ajax que trae los documentos
  * que coincidan con el valor del campo "#camp_query_docs", para esto hace
  * uso de la funcion de peticion query_docs(query, url, funcion_success, funtion_error).
  */
@@ -583,11 +602,11 @@ $('#edit_editorial_modal').on('hidden.bs.modal', function (e)
 
 
 /**
- * Evento generado cuando se hace click sobre un link de eliminacion de 
- * documento, este evento responde con la visializacion de un modal de confirmacion
- * para este fin llama a la funcion auxiliar mostrar_mensaje.
+ * Evento generado cuando se hace click sobre un link de eliminación de 
+ * documento, este evento responde con la visualización de un modal de confirmación
+ * para este fin llama a la función auxiliar mostrar_mensaje.
  * @param  {event} e  datos y valores del evento generado
- * @return {void}     depliegue de mensaje de confirmacion.
+ * @return {void}     despliegue de mensaje de confirmación.
  */
 $('#resultados_docs').on('click', '#eliminar_documento', function(e)
 {
@@ -615,6 +634,57 @@ function llenar_tabla_autores()
 function llenar_tabla_editoriales()
 {
     get_editoriales('');
+}
+
+function success_query_docs(data)
+{
+    var json = JSON.parse(data);
+    var documentos = json.docs;
+    if(json.res === 'success')
+    {
+        $('head title').html('Búsqueda Documentos');
+        $('#contenido section').load(base_url+'libros/rqst_view_query', function()
+        {
+            $.each(documentos, function(index, valor)
+            {
+                var autores = valor[0];
+                var nombres_autores = '';
+                $.each(autores, function(key, value)
+                {
+                    nombres_autores = nombres_autores+' <span>-'+value.nombre+'</span>';
+                });
+
+                $('#resultados_docs tbody').append('<tr>'+
+                                                '<td>'+valor.id+'</td>'+
+                                                '<td>'+valor.titulo_p+'</td>'+
+                                                '<td>'+valor.titulo_s+'</td>'+                                                
+                                                '<td>'+nombres_autores+'</td>'+
+                                                '<td>'+valor.idioma+'</td>'+
+                                                '<td>'+valor.descripcion+'</td>'+
+                                                '<td>'+valor.nombre+'</td>'+
+                                                '<td>Descargar</td>'+                                            
+                                            '</tr>'
+                                            );
+            });
+        });
+        
+    }else if(json.res === 'no found')
+    {
+        $('head title').html('Búsqueda Documentos');
+        $('#contenido section').load(base_url+'libros/rqst_view_query', function()
+        {
+            $('#resultados_docs table').css('display', 'none');
+            $('#resultados_docs #result-mensaje').html('Documento no encontrado!').css('display', 'block');
+        });
+        
+    }else
+    {
+        $('#contenido section').load(base_url+'libros/rqst_view_query', function()
+        {
+            $('#resultados_docs table').css('display', 'none');
+            $('#resultados_docs #result-mensaje').html('Error!').css('display', 'block');
+        });
+    }
 }
 
 function res_query_docs(data)

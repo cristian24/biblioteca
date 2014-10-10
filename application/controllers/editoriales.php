@@ -1,13 +1,27 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * Controlador del módulo Editoriale, en esta clase se hacen y responden todas las peticiones
+ * relacionadas con la gestión de Editoriale, se encarga de cargar la vista adecuada para cada 
+ * petición, extiende del core del controller de codeigniter y carga el modelo de Editoriale.
+ * @author Cristia Andres Cuspoca <cristian.cuspoca@correounivalle.edu.co>
+ * @version 1.0
+ */
 class Editoriales extends CI_Controller {
 
+    /**
+     * Constructor, carga el modelo de editoriales.
+     */
 	public function __construct()
 	{
 		parent::__construct();
 		$this->load->model('editoriales_model');
 	}
 
+    /**
+     * Responde y envia a través de una petición ajax una lista de editoriales.
+     * @return json envio de dtos solicitados por json.
+     */
     public function list_editoriales()
     {
         if($this->input->is_ajax_request())
@@ -29,6 +43,10 @@ class Editoriales extends CI_Controller {
         }
     }
 
+    /**
+     * Responde y envia a través de ajax etición de creación de una editorial.
+     * @return json envio de respuesta por json
+     */
     public function create_rqst()
 	{
 		if($this->input->is_ajax_request())
@@ -54,11 +72,20 @@ class Editoriales extends CI_Controller {
         }
 	}
 
+    /**
+     * Renderiza vista de creacion de editoriales.
+     * @return void
+     */
 	public function create()
 	{
 		$this->load->view('editoriales/create');
 	}
 
+    /**
+     * Recibe y envia petición ajax de actualización de una editorial.
+     * @param  String $id Identificador de la editorial a actualizar.
+     * @return json       Envio de respuesta por json.
+     */
     public function update_rqst($id)
     {
         if($this->input->is_ajax_request())
@@ -82,6 +109,10 @@ class Editoriales extends CI_Controller {
         }
     }
 
+    /**
+     * Renderiza vista de búsqueda de editoriales.
+     * @return void.
+     */
     public function query()
     {
         $this->session->acceso('Catalogador');
@@ -103,6 +134,11 @@ class Editoriales extends CI_Controller {
         $this->load->view('template/footer');
     }
 
+    /**
+     * Recibe y envia petición ajax de búsqueda de editoriales.
+     * @param  boolean $query  filtro de búsqueda.
+     * @return json            Respuesta a través de json.
+     */
     public function query_rqst($query=FALSE)
     {
         if($this->input->is_ajax_request())

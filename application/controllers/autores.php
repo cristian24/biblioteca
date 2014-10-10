@@ -1,5 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * Controlador del módulo autores, en esta clase se hacen y responden todas las peticiones
+ * relacionadas con la gestión de autores, se encarga de cargar la vista adecuada para cada 
+ * petición, extiende del core del controller de codeigniter y carga el modelo de autores.
+ * @author Cristia Andres Cuspoca <cristian.cuspoca@correounivalle.edu.co>
+ * @version 1.0
+ */
 class Autores extends CI_Controller {
 
 	public function __construct()
@@ -9,10 +16,10 @@ class Autores extends CI_Controller {
 	}
 
     /**
-     * Funcion que verifica si es una peticion ajax si lo es
-     * imprime el resultado de la peticion, de lo contrario
+     * Función que verifica si es una petición ajax si lo es
+     * imprime el resultado de la petición, de lo contrario
      * redirige a la pagina 404. 
-     * @return html recibe los datos de una peticion o redirige
+     * @return html recibe los datos de una petición o redirige
      *              a un 404.
      */
     public function list_autores()
@@ -37,12 +44,12 @@ class Autores extends CI_Controller {
     }
 
     /**
-     * Funcion que verifica si es una peticion ajax si lo es verifica
-     * los datos de un formulario si son correctos se envi una peticion
-     * ajax con estos datos y luego se recibe su respuesta, si la peticion
-     * se ejecuta satisfactoriamente se envia en forma de json un mensaje 
-     * de satus success y los datos de la peticion.
-     * @return void Respuesta de la peticion.
+     * Función que verifica si es una petición ajax si lo es verifica
+     * los datos de un formulario si son correctos se envió una petición
+     * ajax con estos datos y luego se recibe su respuesta, si la petición
+     * se ejecuta satisfactoriamente se envía en forma de json un mensaje 
+     * de satus success y los datos de la petición.
+     * @return void Respuesta de la petición.
      */
 	public function create_rqst()
 	{
@@ -69,8 +76,8 @@ class Autores extends CI_Controller {
 	}
 
     /**
-     * Imprime la vista de creacion de autores.
-     * @return void Renderizado de la vista creacion de autores.
+     * Imprime la vista de creación de autores.
+     * @return void Renderizado de la vista creación de autores.
      */
 	public function create()
 	{
@@ -78,11 +85,11 @@ class Autores extends CI_Controller {
 	}
 
     /**
-     * Funcion que ejecuta una consulta de modificacion de datos, de un autor
-     * a traves de una peticion ajax, despues de validar los datos de entrada, se 
-     * envian a traves de json el resultado de la peticion.
+     * Función que ejecuta una consulta de modificación de datos, de un autor
+     * a través de una petición ajax, después de validar los datos de entrada, se 
+     * envian a traves de json el resultado de la petición.
      * @param  String $id identificador del autor a modificar
-     * @return void     se imprime por medio de json el resultado de la peticion
+     * @return void     se imprime por medio de json el resultado de la petición.
      */
     public function update_rqst($id)
     {
@@ -108,10 +115,10 @@ class Autores extends CI_Controller {
     }
 
     /**
-     * Envio de peticion por medio de ajax y json
-     * @param  boolean $query filtro de busqueda, si no se envia nada
+     * Envió de petición por medio de ajax y json
+     * @param  boolean $query filtro de búsqueda, si no se envía nada
      *                        se retorna todos los autores.
-     * @return void         respuesta de la peticion
+     * @return void         respuesta de la petición.
      */
     public function query_rqst($query=FALSE)
     {
@@ -142,8 +149,8 @@ class Autores extends CI_Controller {
     }
 
     /**
-     * Funcion que imprime la vista de busqueda de autores.
-     * @return void Renderizado de la vista de busqueda de autores.
+     * Función que imprime la vista de búsqueda de autores.
+     * @return void Renderizado de la vista de búsqueda de autores.
      */
     public function query()
     {

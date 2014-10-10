@@ -1,7 +1,11 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
- * Clase encargada del acceso a los datos, relacionados con libros/documentos
+ * Modelo del módulo documentos, en esta clase se hacen todas las consultas
+ * relacionadas con la gestión de documentos, extiende del core del modelo
+ * de codeigniter, carga la base de datos.
+ * @author Cristia Andres Cuspoca <cristian.cuspoca@correounivalle.edu.co>
+ * @version 1.0
  */
 class Libros_model extends CI_Model {
 
@@ -14,10 +18,10 @@ class Libros_model extends CI_Model {
 	}
 
 	/**
-	 * Obtiene los autores de un documento especifico, si se envia como true
+	 * Obtiene los autores de un documento específico, si se envía como true
 	 * la variable $with_id se inserta en el select el id del autor, caso contrario
 	 * se consulta solo su nombre.
-	 * @param  [type]  $id_doc  Docuemnto especifico del cual se consultaran sus autores.
+	 * @param  [type]  $id_doc  Documento especifico del cual se consultaran sus autores.
 	 * @param  boolean $with_id true/false si es true se consulta nombre e id del autor,
 	 *                          si es false se consulta solo su nombre.
 	 * @return array           array de autores, si no hay resultados se retorna un array.
@@ -44,6 +48,10 @@ class Libros_model extends CI_Model {
         return array();
 	}
 
+	/**
+	 * Obtiene todos los documentos de la base de datos.
+	 * @return array() resultados de búsqueda, si no se encuentra nada se retorna un array vacío.
+	 */
 	public function get_docs_all()
 	{
 		$this->db->distinct();
@@ -72,6 +80,12 @@ class Libros_model extends CI_Model {
 		}
 	}
 
+	/**
+	 * Obtiene los documentos que coinciden con el filtro de búsqueda.
+	 * @param  String $query  Filtro de búsqueda.
+	 * @return Array          Resultados de búsqueda, retorna un array vacío si no se encuentran
+	 *                        Registros.          	
+	 */
 	public function get_docs_by_query($query)
 	{
 		if($query)
@@ -111,6 +125,11 @@ class Libros_model extends CI_Model {
 		return FALSE;
 	}
 
+	/**
+	 * Obtiene un documento que coincide con el id que se envía por parámetro.
+	 * @param  String $id  Id del documento buscado.
+	 * @return Array()     Resultados del documento con id $id.
+	 */
 	public function get_doc_id($id)
 	{
 		$this->db->distinct();
@@ -139,6 +158,19 @@ class Libros_model extends CI_Model {
 		}
 	}
 
+	/**
+	 * Ingresa un nuevo registro de documento en la base de datos
+	 * @param  String $titulo_p      Título Principal del documento.
+	 * @param  String $titulo_s      Titulo Secundario del documento.
+	 * @param  String $idioma        Idioma del documento.
+	 * @param  String $tipo          Tipo de documento.
+	 * @param  String $nombre_file   Ruta del documento.
+	 * @param  String $descripcion   Descripción del documento.
+	 * @param  String $palabra_clave Palabras del documento.
+	 * @param  String $id_editorial  Id del editorial del documento.
+	 * @param  String $ids_autor     Ids de/los autores del documento.
+	 * @return void/false            Registro creado, o false si falla la creación.
+	 */
 	public function create($titulo_p, $titulo_s, $idioma, 
 						   $tipo, $nombre_file, $descripcion, 
 						   $palabra_clave, $id_editorial, $ids_autor)
@@ -164,6 +196,15 @@ class Libros_model extends CI_Model {
 		}
 	}
 
+	/**
+	 * Elimina un registro de la tabla escrito, si este registro existe.
+	 * @param  String $id_documento Id del documento.
+	 * @param  String $ids_autors   Id del autor.
+	 * @return True/False           - si $ids_autors esta vacío se retorna true, caso contrario false.
+	 *                              - si se encuentra un registro en la tabla escrito que responda
+	 *                              al $id_documento y al $ids_autors se elimina el registro, caso
+	 *                              Contrario se retorna un true.
+	 */
 	public function delete_escrito_by($id_documento, $ids_autors)
 	{
 		$response = FALSE;
@@ -192,6 +233,22 @@ class Libros_model extends CI_Model {
 		return $response;
 	}
 
+	/**
+	 * Actualiza un registro de la tabla documento, si se envía algún valor
+	 * en el paramento $nombre_file también se actualiza este valor caso contrario
+	 * no se hace.
+	 * @param  String $id            ID del Documento.
+	 * @param  String $titulo_p      Título Principal del Documento.
+	 * @param  String $titulo_s      Titulo Secundario del Documento.
+	 * @param  String $idioma        Idioma del Documento.
+	 * @param  String $tipo          Tipo del Documento.
+	 * @param  String $nombre_file   Ruta del Documento.
+	 * @param  String $descripcion   Descripción del Documento.
+	 * @param  String $palabra_clave Palabras claves del Documento.
+	 * @param  String $id_editorial  ID de la editorial del Documento.
+	 * @param  String $ids_autors    Id autores del Documento.
+	 * @return False/True            True si la petición se lleva a término, caso contrario false.
+	 */
 	public function update_libro($id, $titulo_p, $titulo_s, $idioma,
 						   $tipo, $nombre_file, $descripcion, 
 						   $palabra_clave, $id_editorial, $ids_autors)
@@ -245,6 +302,12 @@ class Libros_model extends CI_Model {
 		}
 	}
 
+	/**
+	 * Crea nuevo registro de la tabla escrito.
+	 * @param  String $id_documento Id del documento.
+	 * @param  String $ids_autor    Id del autor, asociado al documento.
+	 * @return True/False           False si falla, true si no.
+	 */
 	public function create_escrito($id_documento, $ids_autor)
 	{
 		$response = FALSE;
@@ -261,6 +324,17 @@ class Libros_model extends CI_Model {
     		$response = $this->db->insert('escrito', $data_escrito);
     	}
     	return $response;
+	}
+
+	/**
+	 * Elimina un registro de la tabla documento.
+	 * @param  String $id id del documento a eliminar.
+	 * @return void
+	 */
+	public function delete($id)
+	{
+		$this->db->where('id', $id);
+        $this->db->delete('documento');
 	}
 
 }

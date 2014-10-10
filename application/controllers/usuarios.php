@@ -1,5 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * Controlador del módulo Usuarios, en esta clase se hacen y responden todas las peticiones
+ * relacionadas con la gestión de Usuarios, se encarga de cargar la vista adecuada para cada 
+ * petición, extiende del core del controller de codeigniter y carga el modelo de Usuarios.
+ * @author Cristia Andres Cuspoca <cristian.cuspoca@correounivalle.edu.co>
+ * @version 1.0
+ */
 class Usuarios extends CI_Controller {
 
     /**
@@ -13,10 +20,10 @@ class Usuarios extends CI_Controller {
 	}
 
     /**
-     * Carga la vista principal
-     * @param  boolean $mensaje recibe un mensaje de exito o de fracaso, por defecto tiene
-     *                          tiene un valor de false, por tanto no se envia ningun mensaje
-     * @return void           Vista principal del modulo usuarios
+     * Carga la vista principal del módulo de usuarios.
+     * @param  boolean $mensaje recibe un mensaje de éxito o de fracaso, por defecto tiene
+     *                          tiene un valor de false, por tanto no se envía ningún mensaje
+     * @return void             Vista principal del módulo usuarios.
      */
 	public function index($mensaje=FALSE)
 	{
@@ -66,9 +73,9 @@ class Usuarios extends CI_Controller {
 
     /**
      * Retorna los datos del usuario consultado, se responde un json el cual es solicitado por un 
-     * llamdo ajax.
-     * @param  boolean $query recibe el/los parametros de busqueda, por defecto no se envia nada.
-     * @return json         datos en formata json
+     * llamado ajax.
+     * @param  boolean $query recibe el/los parámetros de búsqueda, por defecto no se envía nada.
+     * @return json         datos en formato json.
      */
     public function query_rqst($query=FALSE)
     {
@@ -104,11 +111,11 @@ class Usuarios extends CI_Controller {
     }
 
     /**
-     * Carga la vista de busqueda de usuario
-     * @param  String  $accion  Hace referencia a si la busqueda es para una actualización o una 
+     * Carga la vista de búsqueda de usuario
+     * @param  String  $accion  Hace referencia a si la búsqueda es para una actualización o una 
      *                          eliminación.
-     * @param  boolean $mensaje mensaje de exito o de error, por defecto no se envia ningun mensaje.
-     * @return void           se imprime la vista de busquda de usuarios.
+     * @param  boolean $mensaje de éxito o de error, por defecto no se envía ningún mensaje.
+     * @return void           se imprime la vista de búsqueda de usuarios.
      */
     public function query($accion, $mensaje=FALSE)
     {
@@ -179,8 +186,8 @@ class Usuarios extends CI_Controller {
     }
 
     /**
-     * Retorna datos en formato json, a un peticion ajax
-     * @return json datos en format json
+     * Retorna datos en formato json, a un petición ajax
+     * @return json datos en format json.
      */
 	public function login_rqst()
     {
@@ -216,7 +223,7 @@ class Usuarios extends CI_Controller {
 
     /**
      * Carga la vista de logeo
-     * @param  boolean $mensaje Mensaje de exito o de fracaso, por defecto no se envia ningun mensaje.
+     * @param  boolean $mensaje Mensaje de éxito o de fracaso, por defecto no se envía ningún mensaje.
      * @return void           se imprime la vista de logeo.
      */
 	public function login($mensaje=FALSE){
@@ -266,9 +273,9 @@ class Usuarios extends CI_Controller {
 	}
 
     /**
-     * Despliega un mensaje de confirmacion, si se responde con confirmar = true, se elimina la sesion
+     * Despliega un mensaje de confirmación, si se responde con confirmar = true, se elimina la sesión
      * actual.
-     * @param  boolean $confirmar valor de confirmacion true/false.
+     * @param  boolean $confirmar valor de confirmación true/false.
      * @return void             imprime mensaje de confirmación.
      */
     public function salir($confirmar=FALSE)
@@ -285,9 +292,9 @@ class Usuarios extends CI_Controller {
     }
 
     /**
-     * funcion auxiliar que crea las variables de sesion dependiendo de si $valor != invalid
+     * Función auxiliar que crea las variables de sesión dependiendo de si $valor != invalid
      * @param  String $valor valid/invalid
-     * @return void        se crean las variables de sesiones
+     * @return void        se crean las variables de sesiones.
      */
 	public function user_valid($valor)
     {        
@@ -305,11 +312,11 @@ class Usuarios extends CI_Controller {
     }   
 
     /**
-     * Carga la vista de creacion de usuario o registro dependiendo de si $is_admin = true/false
-     * si $is_admin es true es una creacion de usuario, si es false se asume como registro.
-     * @param  boolean $is_admin true/false sirve como bandera para saber si sera un registro o una
-     *                           creacion de usuario.
-     * @return void            vista de creacion de usuarios o registro de usaurios
+     * Carga la vista de creación de usuario o registro dependiendo de si $is_admin = true/false
+     * si $is_admin es true es una creación de usuario, si es false se asume como registro.
+     * @param  boolean $is_admin true/false sirve como bandera para saber si será un registro o una
+     *                           creación de usuario.
+     * @return void            vista de creación de usuarios o registro de usuarios.
      */
     public function create($is_admin = FALSE)
     {        
@@ -389,12 +396,12 @@ class Usuarios extends CI_Controller {
     }
 
     /**
-     * Funcion que carga la vista de actualizacion de informacion del usuario logueado
-     * despues de validados los datos se hace la peticion al modelo de actualizacion 
-     * si esta no falla se redirige de nuevo a esta funcion pero con el valor que entra 
-     * como parametro a true(esta bandera imprime un mensaje de exito).
-     * @param  boolean $is_ok bandera que imprime mensaje de exito
-     * @return void         Rendericado de la vista de actualizacion de info.
+     * Función que carga la vista de actualización de información del usuario logueado
+     * después de validados los datos se hace la petición al modelo de actualización 
+     * si esta no falla se redirige de nuevo a esta función pero con el valor que entra 
+     * como parámetro a true(esta bandera imprime un mensaje de éxito).
+     * @param  boolean $is_ok bandera que imprime mensaje de éxito
+     * @return void         Renderizado de la vista de actualización de info.
      */
     function update_info($is_ok=FALSE)
     {
@@ -442,7 +449,7 @@ class Usuarios extends CI_Controller {
     /**
      * Carga la vista de actualización de usuarios
      * @param  integer  $id    Representa el id del usuario a actualizar
-     * @param  boolean $is_ok bandera que se utiliza para saber si la actualizacion tuvo éxito
+     * @param  boolean $is_ok bandera que se utiliza para saber si la actualización tuvo éxito
      * @return void        se imprime la vista de actualización de usuario.
      */
     public function update($id, $is_ok=FALSE)
@@ -523,6 +530,10 @@ class Usuarios extends CI_Controller {
         $this->load->view('usuarios/delete_user', $data);
     }
 
+    /**
+     * Caraga vista de actualización de pass.
+     * @return void
+     */
     public function update_pass()
     {
         $id = $this->session->userdata('id_user');
@@ -539,6 +550,10 @@ class Usuarios extends CI_Controller {
         $this->load->view('template/footer');       
     }
 
+    /**
+     * Envió y recepción de petición ajax de actualización de pass.
+     * @return json     Respuesta a través de json.
+     */
     public function update_pass_rqst()
     {
         if($this->input->is_ajax_request())
@@ -625,22 +640,9 @@ class Usuarios extends CI_Controller {
                 
                 if( ! empty($datos))
                 {
-                    //codigo de como enviar el email extraido desde
-                    //http://uno-de-piera.com/enviar-emails-en-codeigniter-con-smtp-desde-yahoo-y-gmail/
                     $this->load->library('email');
-                    $configGmail = array(
-                        'protocol' => 'smtp',
-                        'smtp_host' => 'ssl://smtp.gmail.com',
-                        'smtp_port' => 465,
-                        'smtp_user' => 'correoappcristian@gmail.com',
-                        'smtp_pass' => 'cibercorreoapp789',
-                        'mailtype' => 'html',
-                        'charset' => 'utf-8',
-                        'newline' => "\r\n"
-                    );    
-         
-                    //cargamos la configuración para enviar con gmail
-                    $this->email->initialize($configGmail);
+                    //la configuración del correo del que envia se encuentra en el archivo de configuración
+                    // /application/config/email.php
                     $this->email->from('BiblioCristian');
                     $this->email->to($correo);
                     $this->email->subject('Recuperacion de Contraseña');
@@ -702,20 +704,7 @@ class Usuarios extends CI_Controller {
                 if( ! empty($datos))
                 {
                     //codigo de como enviar el email extraido desde
-                    //http://uno-de-piera.com/enviar-emails-en-codeigniter-con-smtp-desde-yahoo-y-gmail/
-                    $this->load->library('email');
-                    $configGmail = array(
-                        'protocol' => 'smtp',
-                        'smtp_host' => 'ssl://smtp.gmail.com',
-                        'smtp_port' => 465,
-                        'smtp_user' => 'correoappcristian@gmail.com',
-                        'smtp_pass' => 'cibercorreoapp789',
-                        'mailtype' => 'html',
-                        'charset' => 'utf-8',
-                        'newline' => "\r\n"
-                    );         
-                    //cargamos la configuración para enviar con gmail
-                    $this->email->initialize($configGmail);
+                    
                     $this->email->from('BiblioCristian');
                     $this->email->to($correo);
                     $this->email->subject('Recuperacion de Login');
