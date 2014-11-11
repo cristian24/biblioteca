@@ -12,7 +12,7 @@
 				<div class="well">  				
 	  				<h4>Nota!</h4>
 	  				<p>Para poder descargar libros es necesario iniciar sesion, si no tienes una cuenta creala 
-	  				<?php echo anchor('#', 'Aqui', array('class' => 'alert-link')); ?></p>  
+	  				<?php echo anchor('usuarios/create', 'Aqui', array('class' => 'alert-link')); ?></p>  
 				</div>
 				<div class="alert alert-danger error" id="user_invalid">					
 					

@@ -618,6 +618,17 @@ $('#resultados_docs').on('click', '#eliminar_documento', function(e)
                     '<a href="'+uri+'" class="btn btn-primary" role="button">Confirmar</a>');
 });
 
+$('section').on('click', '#link_descarga_libro', function(e)
+{
+    e.preventDefault();    
+    mostrar_mensaje('Inicia Sesion/Registrate', 
+                    'No estas Logueado aun, para poder descargar logueate '+
+                    '<a href="'+base_url+'usuarios/login">Aquí</a>, o regístrate '+
+                    '<a href="'+base_url+'usuarios/create">Aquí</a>',
+                    '<button type="button" class="btn btn-default" data-dismiss="modal">Aceptar</button>');
+      
+});
+
 /**
  * ----------------------------------------------------------------------------------------
  * ----------------------------------------------------------------------------------------
@@ -638,6 +649,7 @@ function llenar_tabla_editoriales()
 
 function success_query_docs(data)
 {
+    console.log(data);
     var json = JSON.parse(data);
     var documentos = json.docs;
     if(json.res === 'success')
@@ -653,8 +665,9 @@ function success_query_docs(data)
                 {
                     nombres_autores = nombres_autores+' <span>-'+value.nombre+'</span>';
                 });
-
-                $('#resultados_docs tbody').append('<tr>'+
+                if(json.is_login === true)
+                {
+                    $('#resultados_docs tbody').append('<tr>'+
                                                 '<td>'+valor.id+'</td>'+
                                                 '<td>'+valor.titulo_p+'</td>'+
                                                 '<td>'+valor.titulo_s+'</td>'+                                                
@@ -662,9 +675,23 @@ function success_query_docs(data)
                                                 '<td>'+valor.idioma+'</td>'+
                                                 '<td>'+valor.descripcion+'</td>'+
                                                 '<td>'+valor.nombre+'</td>'+
-                                                '<td>Descargar</td>'+                                            
+                                                '<td><a href="'+base_url+'libros/download_rqst/'+valor.ruta+'">Descargar</a></td>'+
                                             '</tr>'
-                                            );
+                    );
+                }else
+                {
+                    $('#resultados_docs tbody').append('<tr>'+
+                                                '<td>'+valor.id+'</td>'+
+                                                '<td>'+valor.titulo_p+'</td>'+
+                                                '<td>'+valor.titulo_s+'</td>'+                                                
+                                                '<td>'+nombres_autores+'</td>'+
+                                                '<td>'+valor.idioma+'</td>'+
+                                                '<td>'+valor.descripcion+'</td>'+
+                                                '<td>'+valor.nombre+'</td>'+
+                                                '<td><a href="#" id="link_descarga_libro" data-logueado="false">Descargar</a></td>'+
+                                            '</tr>'
+                    );
+                }
             });
         });
         
@@ -704,6 +731,7 @@ function res_query_docs(data)
                                                     '<th>Idioma</th>'+
                                                     '<th>Descripción</th>'+
                                                     '<th>Editorial</th>'+
+                                                    '<th>Acción</th>'+
                                                 '</tr>'+
                                             '</thead>'+
                                             '<tbody>');
@@ -716,16 +744,35 @@ function res_query_docs(data)
                 nombres_autores = nombres_autores+' <span>-'+value.nombre+'</span>';
             });
 
-            $('#resultados_docs tbody').append('<tr>'+
+            if(json.is_login === true)
+            {
+                $('#resultados_docs tbody').append('<tr>'+
                                             '<td>'+valor.id+'</td>'+
                                             '<td>'+valor.titulo_p+'</td>'+
                                             '<td>'+valor.titulo_s+'</td>'+                                                
                                             '<td>'+nombres_autores+'</td>'+
                                             '<td>'+valor.idioma+'</td>'+
                                             '<td>'+valor.descripcion+'</td>'+
-                                            '<td>'+valor.nombre+'</td>'+                                                
+                                            '<td>'+valor.nombre+'</td>'+
+                                            '<td><a href="'+base_url+'libros/download_rqst/'+valor.ruta+'">Descargar</a></td>'+                                              
                                         '</tr>'
                                         );
+            }else
+            {
+                $('#resultados_docs tbody').append('<tr>'+
+                                            '<td>'+valor.id+'</td>'+
+                                            '<td>'+valor.titulo_p+'</td>'+
+                                            '<td>'+valor.titulo_s+'</td>'+                                                
+                                            '<td>'+nombres_autores+'</td>'+
+                                            '<td>'+valor.idioma+'</td>'+
+                                            '<td>'+valor.descripcion+'</td>'+
+                                            '<td>'+valor.nombre+'</td>'+
+                                            '<td><a href="#" id="link_descarga_libro" data-logueado="false">Descargar</a></td>'+                                               
+                                        '</tr>'
+                                        );
+            }
+
+            
         });
         $('#resultados_docs table').append('</tbody>');
     }else if(json.res === 'no found')

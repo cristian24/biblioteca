@@ -55,7 +55,7 @@ class Libros_model extends CI_Model {
 	public function get_docs_all()
 	{
 		$this->db->distinct();
-		$this->db->select('documento.id, documento.titulo_p, documento.titulo_s, documento.idioma, documento.descripcion, editorial.nombre');
+		$this->db->select('documento.id, documento.ruta, documento.titulo_p, documento.titulo_s, documento.idioma, documento.descripcion, editorial.nombre');
 		$this->db->from('documento');
 		$this->db->join('editorial', 'editorial.id = documento.id_editorial', 'inner');
 		$this->db->order_by("documento.id", "asc");
@@ -91,7 +91,7 @@ class Libros_model extends CI_Model {
 		if($query)
 		{
 			$this->db->distinct();
-			$this->db->select('documento.id, documento.titulo_p, documento.titulo_s, documento.idioma, documento.descripcion, editorial.nombre');
+			$this->db->select('documento.id, documento.ruta, documento.titulo_p, documento.titulo_s, documento.idioma, documento.descripcion, editorial.nombre');
 			$this->db->from('documento');
 			$this->db->join('escrito', 'escrito.id_documento = documento.id', 'inner');
 			$this->db->join('autores', 'escrito.id_autor = autores.id', 'inner');
@@ -133,7 +133,7 @@ class Libros_model extends CI_Model {
 	public function get_doc_id($id)
 	{
 		$this->db->distinct();
-		$this->db->select('documento.id, documento.titulo_p, documento.titulo_s, documento.tipo, documento.idioma, documento.descripcion, documento.palabras_clave, editorial.nombre');
+		$this->db->select('documento.id, documento.ruta, documento.titulo_p, documento.titulo_s, documento.tipo, documento.idioma, documento.descripcion, documento.palabras_clave, editorial.nombre');
 		$this->db->from('documento');
 		$this->db->join('editorial', 'editorial.id = documento.id_editorial', 'inner');
 		$this->db->or_where('documento.id', $id);

@@ -159,7 +159,7 @@ class Libros extends CI_Controller {
 		$this->form_validation->set_rules('wrap_keys', 'Palabras Claves', 'trim|required|min_length[3]|max_length[300]|xss_clean');
 
 		$config['upload_path'] = './uploads/';
-		$config['allowed_types'] = 'gif|jpg|png|pdf|doc';
+		$config['allowed_types'] = 'gif|jpg|png|pdf|doc|docx';
 		$config['max_size']	= '512000';
 		$config['max_width']  = '1024';
 		$config['max_height']  = '768';
@@ -239,9 +239,10 @@ class Libros extends CI_Controller {
 		{
 			$doc_buscado = $this->procesar_palabra($query);
 			$respuesta = $this->libros_model->get_docs_by_query($doc_buscado);
+			$is_login = $this->session->userdata('is_logued_in');
 			if( ! empty($respuesta))
 			{
-				$data = array('res' => 'success', 'docs' => $respuesta);
+				$data = array('res' => 'success', 'docs' => $respuesta, 'is_login' => $is_login);
 				echo json_encode($data);
 			}else
 			{
@@ -432,6 +433,25 @@ class Libros extends CI_Controller {
 	{
 		$this->libros_model->delete($id);
         redirect('libros/query/');
+	}
+
+	public function download_rqst($ruta)
+	{
+		/*if($this->input->is_ajax_request())
+		{
+			$this->load->helper('download');
+			$path =  file_get_contents(base_url().'uploads/'.$ruta);
+			force_download($ruta, $path);
+			//$data = array('res' => $res);
+			//echo json_encode($data);
+		}else
+		{
+			show_404();
+		}*/		
+		$this->load->helper('download');
+		$path =  file_get_contents(base_url().'uploads/'.$ruta);
+		force_download($ruta, $path);
+		
 	}
 }
 

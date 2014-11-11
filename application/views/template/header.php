@@ -71,13 +71,12 @@
 					</ul>
 					<?php endif; ?>
 
-				    <form class="navbar-form navbar-right">
+				    <div class="navbar-form navbar-right">
 				    	<div class="input-group">
 				    		<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
 				     		<input class="form-control col-lg-4" id="query_docs_header" placeholder="Titulo/Autor/Editorial" type="text">
 				     	</div>
-				    </form>					    
-					
+				    </div>					
 			  	</div>
 			</div>	 		  			
 		</nav>
